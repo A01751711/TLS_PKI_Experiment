@@ -14,38 +14,47 @@ python verify_environment.py
 
 This checks Python version, OpenSSL, packages, and directories. See [INSTALLATION.md](INSTALLATION.md) for setup help.
 
-### 3. Run Complete Experiment (Collection + Analysis)
+### 3. Run Complete Experiment
 
-**On Windows:**
+**Windows:**
 ```bash
-python run.bat
+run.bat
 ```
 
-**On Linux/macOS:**
+**Linux/macOS:**
 ```bash
 # First time: make script executable
 chmod +x run.sh
 
 # Then run:
-bash run.sh
+./run.sh
 ```
 
-**Or manually:**
+**Or manually (all platforms):**
 ```bash
-python scripts/01_collect_data.py
-python scripts/02_analyze_results.py
+python scripts/main.py
 ```
 
-### 4. View Results
+### 4. Wait for Results (~15-20 minutes)
+
+The script will:
+- Measure 10 websites × 1000 handshakes each
+- Show progress in the terminal
+- Create a timestamped folder with all outputs
+
+**Output folder example:**
 ```
-results/
-├── resumen_estadistico.csv
-├── comparativo_algoritmo.csv
-└── plots/
-    ├── comparativo_latencia_sitio_rsa_vs_ecdsa.png
-    ├── boxplot_rsa_vs_ecdsa.png
-    └── ... (6 plots total)
-```
+tls_web_tls13_rsa_ecdsa_20260519_200420/
+├── results/
+│   ├── raw_web_results.csv           ← All 10,000 measurements
+│   ├── resumen_web_estadistico.csv   ← Per-site stats
+│   ├── comparativo_algoritmo.csv     ← RSA vs ECDSA
+│   └── ...
+├── plots/
+│   ├── comparativo_latencia_sitio_rsa_vs_ecdsa.png
+│   ├── boxplot_rsa_vs_ecdsa.png
+│   └── ... (4 more PNG files)
+└── logs/
 
 ## Troubleshooting
 
@@ -60,23 +69,29 @@ pip install matplotlib
 ```
 
 ### Network issues
-Edit `scripts/01_collect_data.py` and modify `TARGETS` list or increase `TIMEOUT_SECONDS`.
+Edit `scripts/main.py` and modify `TARGETS` list or increase `TIMEOUT_SECONDS`.
 
 ## Custom Configuration
 
 ### Change number of repetitions
-Edit `scripts/01_collect_data.py`:
+Edit `scripts/main.py`:
 ```python
 REPETITIONS = 500  # default is 1000
 ```
 
 ### Add/remove websites
-Edit `scripts/01_collect_data.py`:
+Edit `scripts/main.py`:
 ```python
 TARGETS = [
     {"label": "example", "host": "example.com", "port": 443},
     # Add your own sites here
 ]
+```
+
+### Increase timeout
+Edit `scripts/main.py`:
+```python
+TIMEOUT_SECONDS = 15  # default is 10
 ```
 
 ## Output Interpretation

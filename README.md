@@ -75,78 +75,59 @@ TLS_PKI_Experiment/
 ├── requirements.txt               # Dependencias Python
 │
 ├── scripts/
-│   ├── __init__.py
-│   ├── utils.py                   # Funciones compartidas (logging, CA bundle, helpers)
-│   ├── 01_collect_data.py         # Script de ejecución: mediciones TLS
-│   └── 02_analyze_results.py      # Script de análisis: estadísticas y gráficas
+│   └── main.py                    # Script completo: mediciones + análisis TODO EN UNO
 │
-├── data/                          # Datos crudos generados por el experimento
-│   ├── raw_web_results.csv        # Todos los handshakes (label, host, latency, depth, ...)
-│   ├── chains_detectadas.csv      # Resumen de cadenas por sitio
-│   └── fallos.csv                 # Errores durante mediciones
-│
-└── results/                       # Salidas regenerables (solo tablas y figuras)
-    ├── resumen_estadistico.csv    # Estadísticas agregadas por sitio
-    ├── comparativo_algoritmo.csv  # Comparación RSA vs ECDSA
-    └── plots/                     # Visualizaciones PNG
-        ├── comparativo_latencia_sitio_rsa_vs_ecdsa.png
-        ├── boxplot_rsa_vs_ecdsa.png
-        ├── promedio_medianas_por_algoritmo.png
-        ├── tamano_der_promedio_rsa_vs_ecdsa.png
-        ├── scatter_latencia_vs_der_por_algoritmo.png
-        └── scatter_latencia_vs_profundidad_por_algoritmo.png
+└── (Generated after each run):
+    tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/  ← Timestamped folder
+    ├── results/
+    │   ├── raw_web_results.csv        # Todos los 10,000 handshakes
+    │   ├── resumen_web_estadistico.csv # Estadísticas por sitio
+    │   ├── comparativo_algoritmo.csv  # Comparación RSA vs ECDSA
+    │   ├── chains_detectadas.csv      # Resumen de cadenas
+    │   └── fallos.csv                 # Errores (si los hay)
+    │
+    ├── plots/
+    │   ├── comparativo_latencia_sitio_rsa_vs_ecdsa.png
+    │   ├── boxplot_rsa_vs_ecdsa.png
+    │   ├── promedio_medianas_por_algoritmo.png
+    │   ├── tamano_der_promedio_rsa_vs_ecdsa.png
+    │   ├── scatter_latencia_vs_der_por_algoritmo.png
+    │   └── scatter_latencia_vs_profundidad_por_algoritmo.png
+    │
+    ├── logs/
+    │   ├── inspect_*.log              # Inspección OpenSSL
+    │   └── client_*.log               # Detalles de latencia
+    │
+    └── certs_extraidos/
+        └── [site_certificates]/
 ```
 
 ---
 
-## Flujo de Ejecución End-to-End
+## Flujo de Ejecución
 
-### 1. Recolección de Datos (Mediciones TLS)
-
-```bash
-python scripts/01_collect_data.py
-```
-
-**Lo que hace:**
-- Verifica disponibilidad de OpenSSL y Python
-- Busca o descarga CA bundle para validación de certificados
-- Inspecciona cada sitio HTTPS para detectar algoritmo y profundidad de cadena
-- Ejecuta 1000 handshakes TLS 1.3 por sitio (configurable)
-- Registra latencia, tamaños, profundidad y algoritmo en CSV
-
-**Salidas generadas:**
-- `data/raw_web_results.csv` — Todos los handshakes crudos
-- `data/chains_detectadas.csv` — Resumen de cadenas por sitio
-- `data/fallos.csv` — Errores durante ejecución
-- Directorio de logs con detalles de OpenSSL
-
-**Tiempo estimado:** 10–30 minutos dependiendo del número de sitios
-
-### 2. Análisis y Visualización
+### One-Command Execution
 
 ```bash
-python scripts/02_analyze_results.py
+python scripts/main.py
 ```
 
-**Lo que hace:**
-- Lee datos crudos desde `data/raw_web_results.csv`
-- Calcula estadísticas por sitio: media, mediana, p95, desviación estándar
-- Agrupa por algoritmo (RSA-2048 vs ECDSA P-256) para comparativas
-- Genera 6 gráficas comparativas con matplotlib
-- Exporta tablas a CSV
+**Esto es TODO LO QUE NECESITAS EJECUTAR.** El script hace:
 
-**Salidas generadas:**
-- `results/resumen_estadistico.csv` — Tabla de estadísticas por sitio
-- `results/comparativo_algoritmo.csv` — Comparación agregada por algoritmo
-- `results/plots/` — Visualizaciones PNG
+1. **Verificación de dependencias** (OpenSSL, Python)
+2. **Setup de CA bundle** (detección/descarga)
+3. **Inspección de cadenas TLS** de 10 sitios reales
+4. **Medición de 1000 handshakes por sitio** (~15-20 minutos)
+5. **Cálculo de estadísticas** (media, mediana, p95, stdev)
+6. **Generación de 6 gráficas comparativas**
+7. **Exportación a CSV y PNG**
 
-**Tiempo estimado:** <5 segundos
-
-### Ejecución Completa en Una Línea
-
-```bash
-python scripts/01_collect_data.py && python scripts/02_analyze_results.py
+**Salida:** Nueva carpeta con timestamp:
 ```
+tls_web_tls13_rsa_ecdsa_20260519_200420/
+```
+
+Cada ejecución crea una NUEVA carpeta, permitiendo comparar múltiples runs.
 
 ---
 
@@ -252,7 +233,7 @@ Columnas:
 
 ### Modificar Sitios Objetivo
 
-Edita `scripts/01_collect_data.py` y ajusta la lista `TARGETS`:
+Edita `scripts/main.py` y busca la sección `TARGETS`:
 
 ```python
 TARGETS = [
@@ -264,7 +245,7 @@ TARGETS = [
 
 ### Modificar Número de Repeticiones
 
-En `scripts/01_collect_data.py`:
+En `scripts/main.py`:
 
 ```python
 REPETITIONS = 1000  # Cambiar a tu valor
@@ -398,6 +379,8 @@ Este proyecto es de uso educativo. Adapta según tus necesidades.
 
 **Última actualización:** Mayo 2026
 
-#   T L S _ P K I _ E x p e r i m e n t  
- #   T L S _ P K I _ E x p e r i m e n t  
+#   T L S _ P K I _ E x p e r i m e n t 
+ 
+ #   T L S _ P K I _ E x p e r i m e n t 
+ 
  

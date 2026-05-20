@@ -40,6 +40,9 @@ cacert.pem
 logs/
 certs_extraidos/
 
+# Timestamped output folders from script execution
+tls_web_tls13_rsa_ecdsa_*/
+
 # Data - local copies (keep in repo version control if needed, otherwise uncomment)
 # data/*.csv
 # results/*.csv

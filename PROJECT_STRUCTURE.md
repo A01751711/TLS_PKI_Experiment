@@ -12,24 +12,12 @@ TLS_PKI_Experiment/
 ├── 🔨 run.sh                       ★ Linux/macOS one-click execution
 │
 ├── 📁 scripts/
-│   ├── __init__.py                 (Package marker)
-│   │
-│   ├── 📜 utils.py                 ★ Shared utilities
-│   │   ├── Logging functions (log, ok, warn, hdr)
-│   │   ├── CA bundle detection & download
-│   │   ├── OpenSSL command builders
-│   │   ├── Certificate parsing (algorithm, subject, size)
-│   │   └── SSL/TLS context creation
-│   │
-│   ├── 📜 01_collect_data.py       ★ Data collection script
-│   │   ├── Verify dependencies (OpenSSL, Python)
-│   │   ├── Setup CA bundle for verification
-│   │   ├── Inspect certificate chains from live servers
-│   │   ├── Perform 1000 TLS handshake measurements per site
-│   │   └── Export raw measurements to CSV
-│   │
-│   └── 📜 02_analyze_results.py    ★ Analysis & visualization script
-│       ├── Parse raw data from CSV
+│   └── 📜 main.py                  ★ Complete experiment pipeline
+│       ├── Verify dependencies (OpenSSL, Python)
+│       ├── Setup CA bundle for verification
+│       ├── Inspect certificate chains from live servers
+│       ├── Perform 1000 TLS handshake measurements per site
+│       ├── Export raw measurements to CSV
 │       ├── Calculate statistics (mean, median, p95, stdev)
 │       ├── Compare RSA-2048 vs ECDSA P-256
 │       ├── Generate 6 comparative plots with matplotlib
@@ -90,26 +78,28 @@ TLS_PKI_Experiment/
 
 ## Key Design Decisions
 
-### ✓ Separation of Concerns
-- **utils.py**: Reusable utilities (CA bundle, OpenSSL, certificate parsing)
-- **01_collect_data.py**: Exclusive focus on data collection
-- **02_analyze_results.py**: Exclusive focus on analysis & visualization
+### ✓ Single Unified Script
+- **main.py**: Todas las operaciones (medición, análisis, visualización) en un único archivo
+- Sin dependencias entre scripts
+- Ejecución simple: `python scripts/main.py`
 
-### ✓ Data Organization
-- **data/**: Raw, generated data (reproducible starting point)
-- **results/**: Processed outputs (regenerable from data/)
-- **data/logs/**: Debug information for troubleshooting
+### ✓ Timestamped Output Folders
+- Cada ejecución crea una carpeta nueva con timestamp
+- Permite comparar múltiples runs
+- No sobrescribe resultados anteriores
+- Ejemplo: `tls_web_tls13_rsa_ecdsa_20260519_200420/`
 
-### ✓ Reproducibility
-- All dependencies listed in `requirements.txt`
-- Scripts are independent but sequential
-- No external hardcoded paths
-- CA bundle auto-detection + download fallback
-- Complete logging of errors and decisions
+### ✓ Data Organization (dentro de cada carpeta timestamped)
+- **results/**: CSV y análisis procesados
+- **plots/**: 6 gráficas PNG comparativas
+- **logs/**: Detalles OpenSSL para debugging
+- **certs_extraidos/**: Certificados PEM extraídos
 
-### ✓ Documentation
-- **README.md**: Comprehensive technical reference
-- **QUICKSTART.md**: 5-minute getting started
+### ✓ Reproducibilidad
+- Todas las dependencias en `requirements.txt`
+- No requiere configuración previa
+- Auto-detección de CA bundle + descarga fallback
+- Logging completo de errores y decisiones
 - **run.bat/run.sh**: One-command execution
 - Inline comments in code
 

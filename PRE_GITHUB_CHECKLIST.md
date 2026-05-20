@@ -13,10 +13,7 @@ Antes de subir tu proyecto a GitHub, verifica esta checklist. ✅
 - [ ] `.gitignore` — Exclusiones Git
 
 ### Scripts
-- [ ] `scripts/01_collect_data.py` — Recolección
-- [ ] `scripts/02_analyze_results.py` — Análisis
-- [ ] `scripts/utils.py` — Utilidades compartidas
-- [ ] `scripts/__init__.py` — Paquete Python
+- [ ] `scripts/main.py` — Script principal (recolección + análisis completo)
 - [ ] `run.bat` — Ejecución Windows
 - [ ] `run.sh` — Ejecución Linux/macOS
 - [ ] `verify_environment.py` — Verificación de pre-requisitos
@@ -27,8 +24,9 @@ Antes de subir tu proyecto a GitHub, verifica esta checklist. ✅
 - [ ] `REPRODUCIBILITY_GITHUB.md` — Guía para GitHub
 
 ### Directorios
-- [ ] `data/` — Carpeta para datos (puede estar vacía)
-- [ ] `results/` — Carpeta para resultados (puede estar vacía)
+- [ ] `data/` — Carpeta vacía (legacy, no se usa)
+- [ ] `results/` — Carpeta vacía (legacy, no se usa)
+- [ ] Nota: Resultados se generan en `tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/` por cada ejecución
 
 ---
 
@@ -37,11 +35,12 @@ Antes de subir tu proyecto a GitHub, verifica esta checklist. ✅
 ### En Tu Máquina Local
 
 - [ ] `python verify_environment.py` — Pasa sin errores
-- [ ] `python run.bat` (Windows) o `bash run.sh` — Completa exitosamente
-- [ ] `results/resumen_estadistico.csv` — Se crea correctamente
-- [ ] `results/plots/` — Contiene 6 archivos PNG
-- [ ] `data/raw_web_results.csv` — >1000 líneas
-- [ ] `data/chains_detectadas.csv` — Se crea correctamente
+- [ ] `python scripts/main.py` — Completa exitosamente
+- [ ] Se crea carpeta `tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/`
+- [ ] Contiene `results/resumen_web_estadistico.csv`
+- [ ] Contiene `plots/` con 6 archivos PNG
+- [ ] Contiene `results/raw_web_results.csv` con >1000 líneas
+- [ ] Contiene `results/chains_detectadas.csv`
 
 ### En Ambiente Limpio (Simulación)
 
@@ -63,13 +62,8 @@ pip install -r requirements.txt
 # Verificar
 python verify_environment.py
 
-# Ejecutar (parcial, para prueba rápida)
-# (Cambiar REPETITIONS = 10 en 01_collect_data.py temporalmente)
-python scripts/01_collect_data.py
-
-# Verificar salidas
-ls data/
-ls results/
+# Ejecutar (script centralizado)
+python scripts/main.py
 ```
 
 **Resultado esperado:** ✅ Funciona igual que en tu máquina

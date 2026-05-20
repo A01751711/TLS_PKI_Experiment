@@ -17,17 +17,18 @@ TLS_PKI_Experiment/
 ├── 📦 Code/
 │   ├── requirements.txt             ← All dependencies
 │   └── scripts/
-│       ├── utils.py                 ← Reusable utilities
-│       ├── 01_collect_data.py       ← Measurement collection
-│       └── 02_analyze_results.py    ← Statistical analysis & plots
+│       └── main.py                  ← Complete experiment (measurement + analysis)
 │
 ├── 🔄 Execution/
 │   ├── run.bat                      ← One-click Windows
 │   └── run.sh                       ← One-click Linux/macOS
 │
-└── 📂 Data Folders/
-    ├── data/                        ← Raw measurements (generated)
-    └── results/                     ← Analysis outputs (generated)
+└── 📂 Generated Folders (after execution)/
+    └── tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/  ← Timestamped output folder
+        ├── results/                 ← CSV and analysis files
+        ├── plots/                   ← 6 PNG visualizations
+        ├── logs/                    ← OpenSSL debug logs
+        └── certs_extraidos/         ← Extracted certificates
 ```
 
 ---
@@ -57,40 +58,67 @@ bash run.sh
 ```
 
 ### Step 4: View Results
+
+The script creates a **timestamped folder** with all outputs:
+
 ```
-results/
-├── resumen_estadistico.csv         (Per-site statistics)
-├── comparativo_algoritmo.csv       (RSA vs ECDSA comparison)
-└── plots/                          (6 visualization PNG files)
+tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/
+├── results/
+│   ├── raw_web_results.csv           ← All 10,000 handshake measurements
+│   ├── resumen_web_estadistico.csv   ← Statistics per site
+│   ├── comparativo_algoritmo.csv     ← RSA vs ECDSA comparison
+│   ├── chains_detectadas.csv         ← Certificate chain summary
+│   └── fallos.csv                    ← Errors (if any)
+├── plots/
+│   ├── comparativo_latencia_sitio_rsa_vs_ecdsa.png
+│   ├── boxplot_rsa_vs_ecdsa.png
+│   ├── promedio_medianas_por_algoritmo.png
+│   ├── tamano_der_promedio_rsa_vs_ecdsa.png
+│   ├── scatter_latencia_vs_der_por_algoritmo.png
+│   └── scatter_latencia_vs_profundidad_por_algoritmo.png
+├── logs/
+│   ├── inspect_*.log                 ← OpenSSL certificate inspection
+│   └── client_*.log                  ← Handshake timing details
+└── certs_extraidos/
+    └── [site_certificates]/          ← PEM files per site
 ```
 
-**Done!** 🎉
+**Note:** Each run creates a NEW timestamped folder, so you can compare multiple runs.
 
 ---
 
-## 📖 Documentation Guide
+## � What Happens When You Run
 
-| Document | Read This For |
-|----------|---------------|
-| **00_START_HERE.md** (this file) | Quick introduction |
-| [**QUICKSTART.md**](QUICKSTART.md) | 5-minute getting started |
-| [**README.md**](README.md) | Complete technical reference |
-| [**INSTALLATION.md**](INSTALLATION.md) | Platform-specific setup (Windows/Linux/macOS) |
-| [**PROJECT_STRUCTURE.md**](PROJECT_STRUCTURE.md) | Architecture and design |
-| [**REPRODUCIBILITY_GITHUB.md**](REPRODUCIBILITY_GITHUB.md) | GitHub/sharing guide |
-| [**REPRODUCIBILITY_CHECKLIST.md**](REPRODUCIBILITY_CHECKLIST.md) | Verification checklist |
+**Single Command:**
+```bash
+python scripts/main.py
+```
+
+**This does everything:**
+1. ✅ Verify Python and OpenSSL
+2. ✅ Find/download CA certificate bundle
+3. ✅ Inspect 10 real websites (HTTPS/TLS 1.3)
+4. ✅ Measure 1000 handshakes per website (~15 min)
+5. ✅ Calculate statistics & comparisons
+6. ✅ Generate 6 comparative plots
+7. ✅ Save everything to timestamped folder
+
+**Output:** New folder like `tls_web_tls13_rsa_ecdsa_20260519_200420/` with all results.
 
 ---
 
 ## 📋 What Each File Does
 
-### Scripts (`scripts/`)
+### Script (`scripts/main.py`)
 
-| Script | Purpose | Duration |
-|--------|---------|----------|
-| **01_collect_data.py** | Measures TLS handshakes from 10 real websites × 1000 times each | ~15 min |
-| **02_analyze_results.py** | Calculates statistics and generates 6 comparative plots | ~5 sec |
-| **utils.py** | Shared functions (logging, OpenSSL, cert parsing, CA bundle) | Library |
+Script único que hace TODO:
+- Verifica dependencias (OpenSSL, Python)
+- Busca/descarga CA bundle
+- Inspecciona 10 sitios HTTPS reales
+- Mide 1000 handshakes TLS 1.3 por sitio
+- Calcula estadísticas
+- Genera 6 gráficas comparativas
+- Exporta resultados a CSV y PNG
 
 ### Documentation
 
@@ -106,7 +134,7 @@ results/
 ## 🔧 Configuration
 
 ### Change Target Websites
-Edit `scripts/01_collect_data.py`:
+Edit `scripts/main.py`:
 ```python
 TARGETS = [
     {"label": "google", "host": "google.com", "port": 443},
@@ -115,13 +143,13 @@ TARGETS = [
 ```
 
 ### Change Number of Measurements
-Edit `scripts/01_collect_data.py`:
+Edit `scripts/main.py`:
 ```python
 REPETITIONS = 1000  # Change to your value
 ```
 
 ### Increase Timeout (for slow networks)
-Edit `scripts/01_collect_data.py`:
+Edit `scripts/main.py`:
 ```python
 TIMEOUT_SECONDS = 15  # Default is 10
 ```

@@ -5,21 +5,16 @@ set -e
 
 echo ""
 echo "============================================================================"
-echo " TLS PKI Experiment - Recoleccion y Analisis"
+echo " TLS PKI Experiment - TLS 1.3 Handshake Measurement"
 echo "============================================================================"
 echo ""
 
-echo "[1/2] Recolectando datos de mediciones TLS 1.3..."
-python3 scripts/01_collect_data.py
-
-echo ""
-echo "[2/2] Analizando resultados y generando graficas..."
-python3 scripts/02_analyze_results.py
+python3 scripts/main.py
 
 echo ""
 echo "============================================================================"
 echo " Experimento completado exitosamente!"
-echo " Resultados disponibles en: results/"
+echo " Resultados disponibles en la carpeta de timestamp mas reciente"
 echo "============================================================================"
 echo ""
 
