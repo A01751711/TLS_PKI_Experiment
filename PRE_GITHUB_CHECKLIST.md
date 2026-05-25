@@ -1,13 +1,13 @@
-# Pre-GitHub Deployment Checklist
+# Lista de verificación previa a GitHub
 
-Antes de subir tu proyecto a GitHub, verifica esta checklist. ✅
+Antes de subir tu proyecto a GitHub, verifica esta lista. ✅
 
 ## 📋 Estructura de Archivos
 
 ### Archivos Principales
 - [ ] `README.md` — Documentación técnica completa
 - [ ] `QUICKSTART.md` — Guía de 5 minutos
-- [ ] `INSTALLATION.md` — Setup por plataforma
+- [ ] `INSTALLATION.md` — Instalación por plataforma
 - [ ] `00_START_HERE.md` — Punto de entrada
 - [ ] `requirements.txt` — Dependencias Python
 - [ ] `.gitignore` — Exclusiones Git
@@ -18,19 +18,18 @@ Antes de subir tu proyecto a GitHub, verifica esta checklist. ✅
 - [ ] `run.sh` — Ejecución Linux/macOS
 - [ ] `verify_environment.py` — Verificación de pre-requisitos
 
-### Documentación Adicional
+### Documentación adicional
 - [ ] `PROJECT_STRUCTURE.md` — Arquitectura
 - [ ] `REPRODUCIBILITY_CHECKLIST.md` — Validación interna
 - [ ] `REPRODUCIBILITY_GITHUB.md` — Guía para GitHub
 
 ### Directorios
-- [ ] `data/` — Carpeta vacía (legacy, no se usa)
-- [ ] `results/` — Carpeta vacía (legacy, no se usa)
-- [ ] Nota: Resultados se generan en `tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/` por cada ejecución
+- [ ] Opcional: `data/` y `results/` vacías en la raíz (si `verify_environment.py` las exige)
+- [ ] Nota: Los resultados reales se generan en `tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/` por cada ejecución
 
 ---
 
-## 🧪 Pruebas Pre-Deployment
+## 🧪 Pruebas antes de publicar
 
 ### En Tu Máquina Local
 
@@ -49,8 +48,8 @@ Antes de subir tu proyecto a GitHub, verifica esta checklist. ✅
 mkdir /tmp/test_tls_pki
 cd /tmp/test_tls_pki
 
-# Clonar (o copiar tus archivos)
-cp -r ~/TLS_PKI_Experiment/* .
+# Descargar una copia en ZIP y extraerla
+unzip TLS_PKI_Experiment-main.zip
 
 # Simular usuario nuevo
 python -m venv venv
@@ -84,11 +83,11 @@ python scripts/main.py
   - [ ] Windows (Git for Windows, versión directa)
   - [ ] Linux (Ubuntu/Debian)
   - [ ] macOS (Homebrew)
-  - [ ] Troubleshooting de dependencias
+  - [ ] Solución de problemas de dependencias
 
 - [ ] QUICKSTART.md es realmente "5 minutos"
   - [ ] Solo pasos esenciales
-  - [ ] Links a docs completas
+  - [ ] Enlaces a la documentación completa
 
 - [ ] Todos los archivos .md tienen:
   - [ ] Títulos claros
@@ -99,15 +98,15 @@ python scripts/main.py
 
 ## 🔐 Seguridad y Privacidad
 
-- [ ] No hay credenciales en código (API keys, contraseñas)
-- [ ] No hay rutas absoltas hardcoded (C:\Users\...)
+- [ ] No hay credenciales en código (claves de API, contraseñas)
+- [ ] No hay rutas absolutas fijas en el código (p. ej. `C:\Users\...`)
 - [ ] No hay directorios personales
-- [ ] CA bundle se descarga de URL pública y verificada
-- [ ] Scripts no escriben fuera de project root
+- [ ] El bundle CA se descarga desde una URL pública y verificada
+- [ ] Los scripts no escriben fuera de la raíz del proyecto
 
 ---
 
-## 🎯 Metadatos GitHub
+## 🎯 Metadatos en GitHub
 
 Antes de hacer push, en tu repo local:
 
@@ -120,18 +119,18 @@ cat .gitignore
 
 # Commit inicial
 git add .
-git commit -m "Initial commit: TLS PKI reproducible research project"
+git commit -m "Commit inicial: proyecto TLS PKI reproducible"
 ```
 
-### En GitHub Web
+### En la web de GitHub
 
-- [ ] Descripción corta en "About":
+- [ ] Descripción corta en «About»:
   ```
-  Empirical study of X.509 certificate verification cost in TLS 1.3
+  Estudio empírico del costo de verificación de certificados X.509 en TLS 1.3
   (RSA-2048 vs ECDSA P-256)
   ```
 
-- [ ] Topics agregados:
+- [ ] Temas (topics) agregados:
   ```
   tls, pki, cryptography, x509, ecdsa, rsa, research, reproducible
   ```
@@ -149,38 +148,28 @@ git commit -m "Initial commit: TLS PKI reproducible research project"
 ### Antes de Subir
 
 - [ ] `data/` está EN .gitignore (datos generados)
-- [ ] `results/` está EN .gitignore (outputs regenerables)
-- [ ] `data/logs/` no sube a GitHub
-- [ ] `data/certs_extraidos/` no sube a GitHub
+- [ ] `results/` está EN .gitignore (salidas regenerables)
+- [ ] Carpetas `tls_web_tls13_rsa_ecdsa_*/` no suben a GitHub (salidas regenerables)
 - [ ] Solo scripts y docs suben
 
 **Razón:** Los usuarios generarán sus propios datos al ejecutar
 
 ### Después de Subir
 
-- [ ] Usuario puede clonar
-- [ ] `data/` y `results/` existen pero vacíos (carpetas)
+- [ ] Usuario puede descargar ZIP y ejecutar
+- [ ] Opcional: crear `data/` y `results/` vacías si la verificación lo pide
 - [ ] Al ejecutar scripts, crea sus propios CSVs
 
 ---
 
 ## 🔍 Revisar Archivos Específicos
 
-### 01_collect_data.py
-- [ ] No tiene hardcoded paths
+### main.py
+- [ ] Integra recolección y análisis en un solo script
+- [ ] No tiene rutas fijas en el código
 - [ ] TARGETS es fácil de modificar
 - [ ] Comentarios explican secciones clave
 - [ ] Usa Path() para rutas relativas
-
-### 02_analyze_results.py
-- [ ] Lee de `data/raw_web_results.csv`
-- [ ] Escribe en `results/`
-- [ ] No depende de ejecución anterior (solo de CSV)
-
-### utils.py
-- [ ] Funciones bien documentadas (docstrings)
-- [ ] setup_ca_bundle() maneja fallback automático
-- [ ] No hay imports externos no listados en requirements.txt
 
 ### run.bat, run.sh
 - [ ] run.bat funciona en Windows
@@ -191,7 +180,7 @@ git commit -m "Initial commit: TLS PKI reproducible research project"
 
 ## 🧠 Lógica de Decisiones
 
-Documenta WHY, no solo WHAT. En cada script principal:
+Documenta el porqué, no solo el qué. En el script principal:
 
 - [ ] Comentario inicial explica propósito
 - [ ] Secciones con ## numeradas
@@ -212,7 +201,7 @@ TLS_VERSION_FLAG = "-tls1_3"
 ## 🚀 Antes del Primer Push
 
 ```bash
-# Último check local
+# Última comprobación local
 cd ~/TLS_PKI_Experiment
 
 # Verificar estructura
@@ -231,118 +220,117 @@ python verify_environment.py
 # Verificar que solo docs + scripts suban
 git status
 
-# Expected:
-# On branch main
-# nothing to commit, working tree clean
+# Resultado esperado:
+# En la rama main
+# nada para confirmar, árbol de trabajo limpio
 #
-# O si es primer commit:
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
+# O en el primer commit, solo archivos del proyecto (documentación y scripts):
 #         .gitignore
 #         00_START_HERE.md
 #         INSTALLATION.md
 #         ... (docs y scripts)
-#         scripts/01_collect_data.py
+#         scripts/main.py
 #         ... (scripts)
 #
 # NO debe haber:
-#         data/raw_web_results.csv
-#         results/plots/*.png
+#         tls_web_tls13_rsa_ecdsa_*/
+#         cacert.pem
 ```
 
 ---
 
-## ✅ Final Verification
+## ✅ Verificación final
 
-Execute this before pushing:
+Ejecuta esto antes del push:
 
 ```bash
-# Quick reproducibility test
+# Verificación rápida de reproducibilidad
 python -c "
 from pathlib import Path
 import sys
 
-# Check required files
+# Archivos requeridos
 required = [
     'README.md', 'QUICKSTART.md', 'INSTALLATION.md',
     'requirements.txt', '.gitignore',
-    'scripts/01_collect_data.py', 'scripts/02_analyze_results.py',
-    'scripts/utils.py', 'run.bat', 'run.sh',
+    'scripts/main.py',
+    'run.bat', 'run.sh',
     'verify_environment.py'
 ]
 
 missing = [f for f in required if not Path(f).exists()]
 
 if missing:
-    print(f'❌ Missing files: {missing}')
+    print(f'❌ Faltan archivos: {missing}')
     sys.exit(1)
 else:
-    print('✅ All required files present')
+    print('✅ Todos los archivos requeridos presentes')
 
-# Check .gitignore
+# Comprobar .gitignore
 gitignore = Path('.gitignore').read_text()
-if 'data/' not in gitignore or 'results/' not in gitignore:
-    print('❌ .gitignore does not exclude data/ and results/')
+if 'tls_web_tls13_rsa_ecdsa_' not in gitignore:
+    print('❌ .gitignore no excluye carpetas de salida con marca de tiempo')
     sys.exit(1)
 else:
-    print('✅ .gitignore properly configured')
+    print('✅ .gitignore configurado correctamente')
 
-print('✅ Project ready for GitHub!')
+print('✅ Proyecto listo para GitHub!')
 "
 ```
 
 ---
 
-## 📋 Post-GitHub Verification
+## 📋 Verificación posterior a GitHub
 
-After pushing to GitHub:
+Después de subir a GitHub:
 
-- [ ] Go to your GitHub repo URL
-- [ ] Click "Code" button
-- [ ] Copy HTTPS URL
-- [ ] In new temp directory:
+- [ ] Abre la URL de tu repositorio en GitHub
+- [ ] Haz clic en el botón "Code"
+- [ ] Descarga el ZIP del repositorio
+- [ ] En un directorio temporal nuevo:
   ```bash
-  cd /tmp/test_clone
-  git clone <your-repo-url>
+  mkdir -p /tmp/test_tls_pki
+  cd /tmp/test_tls_pki
+  unzip TLS_PKI_Experiment-main.zip
   cd TLS_PKI_Experiment
   python verify_environment.py
   ```
-- [ ] Should pass all checks
-- [ ] README.md renders beautifully
-- [ ] All links work (.md files, code references)
+- [ ] Debe pasar todos los checks
+- [ ] README.md se renderiza correctamente
+- [ ] Todos los enlaces funcionan (archivos .md, referencias)
 
 ---
 
-## 🎉 You're Ready!
+## 🎉 ¡Listo para publicar!
 
-If all checkboxes are ✅, your project is:
+Si todos los checkboxes están ✅, tu proyecto es:
 
-- ✅ **Reproducible** — Anyone can clone and run
-- ✅ **Professional** — Well-structured and documented
-- ✅ **Safe** — No sensitive data leaked
-- ✅ **Maintainable** — Easy for others to extend
+- ✅ **Reproducible** — Cualquier usuario puede descargar el ZIP y ejecutar
+- ✅ **Profesional** — Bien estructurado y documentado en español
+- ✅ **Seguro** — Sin datos sensibles en el repositorio
+- ✅ **Mantenible** — Fácil de extender por otros
 
-### Push It!
+### Publicar
 
 ```bash
 git add .
-git commit -m "Initial commit: TLS PKI reproducible research project"
+git commit -m "Commit inicial: proyecto TLS PKI reproducible"
 git push -u origin main
 ```
 
-Share the GitHub link with confidence. 🚀
+Comparte el enlace de GitHub con confianza. 🚀
 
 ---
 
-## If Something Goes Wrong
+## Si algo falla
 
-1. Check [REPRODUCIBILITY_GITHUB.md](REPRODUCIBILITY_GITHUB.md)
-2. Verify with [INSTALLATION.md](INSTALLATION.md)
-3. Run `python verify_environment.py` locally
-4. Review [README.md](README.md) for complete setup
+1. Revisa [REPRODUCIBILITY_GITHUB.md](REPRODUCIBILITY_GITHUB.md)
+2. Verifica con [INSTALLATION.md](INSTALLATION.md)
+3. Ejecuta `python verify_environment.py` en local
+4. Consulta [README.md](README.md) para la configuración completa
 
 ---
 
-**Last Updated:** May 17, 2026  
-**Status:** Ready for production use ✅
+**Última actualización:** Mayo 2026  
+**Estado:** Listo para publicar ✅
 

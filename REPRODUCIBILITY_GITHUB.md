@@ -1,68 +1,74 @@
-# GitHub Reproducibility Assessment
+# Evaluación de reproducibilidad en GitHub
 
-## La Respuesta Corta
+## La respuesta corta
 
-**Sí. ✅ Casi con certeza, cualquier persona que clone tu repositorio podrá replicarlo completamente.**
+**Sí. Casi con certeza, cualquier persona que descargue una copia en ZIP podrá replicarlo por completo.**
 
 ---
 
-## La Respuesta Detallada
+## La respuesta detallada
 
-### ✅ Lo Que Está Bien
+### Lo que está bien
 
-| Aspecto | Estado | Por Qué |
+| Aspecto | Estado | Motivo |
 |---------|--------|--------|
-| **Documentación** | ✓ Excelente | README, QUICKSTART, INSTALLATION, guías completas |
-| **Dependencias Python** | ✓ Explícitas | requirements.txt lista todo (pandas, matplotlib) |
-| **Scripts modulares** | ✓ Claros | Separación de concerns (collect vs analyze) |
-| **Datos crudos vs procesados** | ✓ Separados | data/ vs results/ |
-| **Logs y auditoría** | ✓ Completos | Todos los errores registrados |
-| **Portabilidad** | ✓ Multi-plataforma | Windows, Linux, macOS soportados |
-| **Rutas relativas** | ✓ Correctas | Path().resolve() para flexibilidad |
-| **CA bundle** | ✓ Auto-detectado | Descargas automático si falta |
-| **Verificación de env** | ✓ Pre-vuelo | verify_environment.py |
-| **Scripts ejecutables** | ✓ Provistos | run.bat, run.sh |
+| **Documentación** | Excelente | README, QUICKSTART, INSTALLATION y guías completas |
+| **Dependencias Python** | Explícitas | `requirements.txt` lista todo (pandas, matplotlib) |
+| **Script unificado** | Claro | `main.py` integra medición y análisis en una sola ejecución |
+| **Salidas organizadas** | Bien estructuradas | Carpeta con marca de tiempo: `results/`, `plots/`, `logs/`, certificados |
+| **Registros y auditoría** | Completos | Todos los errores quedan registrados |
+| **Portabilidad** | Multiplataforma | Windows, Linux y macOS |
+| **Rutas relativas** | Correctas | `Path().resolve()` para flexibilidad |
+| **Bundle CA** | Autodetectado | Descarga automática si falta |
+| **Verificación del entorno** | Previa a la ejecución | `verify_environment.py` |
+| **Scripts de lanzamiento** | Incluidos | `run.bat`, `run.sh` |
 
 ---
 
-### ⚠️ Puntos de Fricción Menor (Muy Manejables)
+### Puntos de fricción menores (muy manejables)
 
-| Fricciones | Severidad | Solución | Ya Incluido |
-|-----------|-----------|----------|-----------|
-| OpenSSL es del sistema | ⚠️ Baja | Documentado en INSTALLATION.md | ✓ Sí |
-| Primer tiempo en Linux/macOS | ⚠️ Muy Baja | `chmod +x run.sh` (one-time) | ✓ Documentado |
-| Conexión a Internet | ⚠️ Muy Baja | Requerida para HTTPS, normal | ✓ Documentado |
-| Timeout en conexiones lentas | ⚠️ Muy Baja | Configurable en código | ✓ Comentado |
+| Fricción | Severidad | Solución | Ya documentado |
+|----------|-----------|----------|----------------|
+| OpenSSL es del sistema | Baja | Ver `INSTALLATION.md` | Sí |
+| Primera vez en Linux/macOS | Muy baja | `chmod +x run.sh` (una sola vez) | Sí |
+| Conexión a Internet | Muy baja | Necesaria para HTTPS | Sí |
+| Tiempo de espera en redes lentas | Muy baja | Configurable en el código | Sí (comentarios) |
 
 ---
 
-## Paso a Paso: Lo Que Hace un Usuario Nuevo
+## Paso a paso: lo que hace un usuario nuevo
 
-### 1️⃣ Clone el Repositorio
+### 1. Descargar una copia en ZIP
+
+Descargue el repositorio como archivo ZIP desde GitHub y extráigalo en una carpeta.
+
 ```bash
-git clone https://github.com/tuusuario/TLS_PKI_Experiment.git
 cd TLS_PKI_Experiment
 ```
-**Resultado esperado:** ✅ Todos los archivos descargados
+
+**Resultado esperado:** todos los archivos del proyecto presentes.
 
 ---
 
-### 2️⃣ Lea la Documentación
+### 2. Leer la documentación
+
 El usuario verá:
-- `00_START_HERE.md` ← Punto de entrada
-- `README.md` ← Documentación técnica completa
-- `QUICKSTART.md` ← 5 minutos para empezar
-- `INSTALLATION.md` ← Setup por plataforma
 
-**Resultado esperado:** ✅ Usuario sabe qué hacer
+- `00_START_HERE.md` — Punto de entrada
+- `README.md` — Documentación técnica completa
+- `QUICKSTART.md` — Inicio en unos minutos
+- `INSTALLATION.md` — Instalación por plataforma
+
+**Resultado esperado:** el usuario sabe qué hacer a continuación.
 
 ---
 
-### 3️⃣ Instale Dependencias del Sistema
+### 3. Instalar dependencias del sistema
 
 **Windows:**
+
 ```powershell
-# OPCIÓN A: Git for Windows (recomendado)
+# Opción A: Git for Windows (recomendado)
 # Descargar desde https://git-scm.com/download/win
 # Incluye OpenSSL automáticamente
 
@@ -72,106 +78,113 @@ openssl version
 ```
 
 **Linux:**
+
 ```bash
 sudo apt-get update
 sudo apt-get install python3 python3-pip openssl
 ```
 
 **macOS:**
+
 ```bash
 brew install python3 openssl
 ```
 
-**Resultado esperado:** ✅ OpenSSL disponible en PATH
+**Resultado esperado:** OpenSSL disponible en PATH.
 
 ---
 
-### 4️⃣ Instale Dependencias Python
+### 4. Instalar dependencias Python
+
 ```bash
 pip install -r requirements.txt
 ```
 
-**Resultado esperado:** ✅ pandas, matplotlib instalados
+**Resultado esperado:** pandas y matplotlib instalados.
 
 ---
 
-### 5️⃣ Verifique Configuración
+### 5. Verificar la configuración
+
 ```bash
 python verify_environment.py
 ```
 
 **Resultado esperado:**
+
 ```
-========================================================================
- ✓ All checks passed! Ready to run.
-========================================================================
+======================================================================
+ ✓ Todas las comprobaciones pasaron. Listo para ejecutar.
+======================================================================
 ```
 
 ---
 
-### 6️⃣ Ejecute Experimento
+### 6. Ejecutar el experimento
+
 ```bash
-# Windows:
-python run.bat
+# Windows (PowerShell o CMD):
+.\run.bat
 
 # Linux/macOS:
 chmod +x run.sh
 bash run.sh
 ```
 
-**Resultado esperado:** 
-- ✅ 10–15 minutos de mediciones TLS
-- ✅ Archivos CSV en `data/`
-- ✅ Gráficas en `results/plots/`
+**Resultado esperado:**
+
+- 10–15 minutos de mediciones TLS
+- Carpeta con marca de tiempo: `tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/`
+- Archivos CSV en `results/`
+- Gráficas en `plots/`
+- Registros de auditoría en `logs/`
 
 ---
 
-## Tasa de Éxito Estimada
+## Tasa de éxito estimada
 
-| Scenario | Tasa de Éxito |
-|----------|---------------|
-| Usuario Windows con Git instalado | 99% |
-| Usuario Linux con apt-get | 99.5% |
-| Usuario macOS con Homebrew | 99% |
-| Usuario con proxy/firewall | ~95% (timeout manejable) |
-| Usuario en máquina serverless (AWS Lambda, etc) | 50% (sin OpenSSL pre-instalado) |
+| Escenario | Tasa de éxito |
+|-----------|---------------|
+| Usuario Windows con Git instalado | 99 % |
+| Usuario Linux con apt-get | 99,5 % |
+| Usuario macOS con Homebrew | 99 % |
+| Usuario con proxy o firewall | ~95 % (tiempo de espera configurable) |
+| Usuario en entorno sin servidor (AWS Lambda, etc.) | 50 % (sin OpenSSL preinstalado) |
 
 ---
 
-## Qué Necesita Para Estar 100% Seguro
+## Qué conviene para estar seguro al 100 %
 
-### En tu README.md, agrega esta tabla:
+### Tabla opcional para el README
 
 ```markdown
-## Reproducibility Verification
+## Verificación de reproducibilidad
 
-This project has been verified to be reproducible under:
+| Plataforma | Python | OpenSSL | Estado |
+|------------|--------|---------|--------|
+| Windows 10/11 + Git | 3.7–3.11 | 1.1.1+ | Verificado |
+| Ubuntu 18.04 LTS | 3.8–3.10 | 1.1.1+ | Verificado |
+| macOS 11+ | 3.9–3.11 | 1.1.1+ | Verificado |
+| CentOS 7 | 3.6–3.9 | 1.0.2+ | Sin probar |
 
-| Platform | Python | OpenSSL | Status |
-|----------|--------|---------|--------|
-| Windows 10/11 + Git | 3.7–3.11 | 1.1.1+ | ✅ Verified |
-| Ubuntu 18.04 LTS | 3.8–3.10 | 1.1.1+ | ✅ Verified |
-| macOS 11+ | 3.9–3.11 | 1.1.1+ | ✅ Verified |
-| CentOS 7 | 3.6–3.9 | 1.0.2+ | ⚠️ Untested |
+### Limitaciones conocidas
 
-### Known Limitations
-
-- Requires OpenSSL in PATH (not bundled)
-- First run downloads CA certificate (~1 MB)
-- Network latency measurements depend on ISP connection
-- HTTPS servers must support TLS 1.3
+- Requiere OpenSSL en PATH (no incluido en el repositorio)
+- La primera ejecución puede descargar el bundle CA (~1 MB)
+- La latencia depende de la conexión del usuario
+- Los servidores deben soportar TLS 1.3
 ```
 
 ---
 
-## Pasos Opcionales Para Máxima Reproducibilidad
+## Pasos opcionales para máxima reproducibilidad
 
-### 1. Agregar GitHub Actions para Verificación Automática
+### 1. Agregar GitHub Actions para verificación automática
 
 Crea `.github/workflows/verify.yml`:
 
 ```yaml
-name: Verify Reproducibility
+name: Verificar reproducibilidad
 
 on: [push, pull_request]
 
@@ -179,21 +192,22 @@ jobs:
   test-ubuntu:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       - run: |
           sudo apt-get update
           sudo apt-get install -y openssl
           pip install -r requirements.txt
+          mkdir -p data results
           python verify_environment.py
 
   test-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       - run: |
@@ -204,21 +218,22 @@ jobs:
   test-macos:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       - run: |
           brew install openssl
           pip install -r requirements.txt
+          mkdir -p data results
           python verify_environment.py
 ```
 
-**Resultado:** GitHub verifica automáticamente en 3 plataformas en cada push.
+**Resultado:** GitHub verifica automáticamente en tres plataformas en cada envío (`push`).
 
 ---
 
-### 2. Agregar Dockerfile para Aislamiento Total
+### 2. Agregar Dockerfile para aislamiento total
 
 Crea `Dockerfile`:
 
@@ -227,26 +242,26 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Install system dependencies
+# Dependencias del sistema
 RUN apt-get update && apt-get install -y \
     openssl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy project
+# Copiar proyecto
 COPY . .
 
-# Install Python dependencies
+# Dependencias Python
 RUN pip install -r requirements.txt
 
-# Verify environment
-RUN python verify_environment.py
+# Verificar entorno
+RUN mkdir -p data results && python verify_environment.py
 
-# Run experiment
+# Ejecutar experimento
 CMD ["bash", "run.sh"]
 ```
 
-**Resultado:** Cualquiera puede ejecutar en Docker sin instalar nada.
+**Resultado:** ejecución en Docker sin instalar dependencias en el host.
 
 ```bash
 docker build -t tls-pki-experiment .
@@ -255,7 +270,7 @@ docker run -v $(pwd)/results:/app/results tls-pki-experiment
 
 ---
 
-### 3. Agregar CITATION.cff para Citación Académica
+### 3. Agregar CITATION.cff para citación académica
 
 Crea `CITATION.cff`:
 
@@ -279,66 +294,67 @@ keywords:
 
 ---
 
-## Honestidad Total: Posibles Problemas
+## Posibles problemas (evaluación honesta)
 
-### Escenarios Donde Podría Fallar
+### Escenarios en los que podría fallar
 
 1. **Usuario sin conexión a Internet**
-   - Impacto: No puede acceder a sitios HTTPS ni descargar CA bundle
-   - Solución: Documentado; usuario offline puede usar certificados locales
+   - Impacto: no puede acceder a sitios HTTPS ni descargar el bundle CA
+   - Solución: documentado; en modo sin red puede usarse certificados locales
 
-2. **Usuario en Red Corporativa con Proxy**
-   - Impacto: Handshakes TLS pueden fallar
-   - Solución: Configurable en código; fallos registrados
+2. **Usuario en red corporativa con proxy**
+   - Impacto: los handshakes TLS pueden fallar
+   - Solución: configurable en el código; los fallos quedan registrados
 
-3. **Usuario en Máquina sin OpenSSL** (serverless, ambiente restringido)
-   - Impacto: Script falla en inspección de cadenas
-   - Solución: Dockerfile proporciona aislamiento
+3. **Usuario en máquina sin OpenSSL** (entorno restringido o sin servidor)
+   - Impacto: el script falla al inspeccionar cadenas
+   - Solución: el Dockerfile opcional aísla el entorno
 
-4. **Usuario que no lee instrucciones**
-   - Impacto: Olvida `chmod +x run.sh` en Linux
-   - Solución: Documentado múltiples veces; verify_environment.py avisa
+4. **Usuario que no lee las instrucciones**
+   - Impacto: olvida `chmod +x run.sh` en Linux
+   - Solución: documentado varias veces; `verify_environment.py` también orienta
 
 ---
 
-## Mi Evaluación Final
+## Evaluación final
 
-### Reproducibilidad: 9.5/10 ✅
+### Reproducibilidad: 9,5/10
 
 **Fortalezas:**
-- Documentación exhaustiva
-- Scripts modulares y claros
-- Manejo robusto de errores
-- Multi-plataforma
-- Verificación de pre-requisitos
 
-**Puntos de mejora (opcionales):**
-- GitHub Actions para CI/CD
+- Documentación exhaustiva
+- Script unificado (`main.py`) y guías claras
+- Manejo robusto de errores
+- Soporte multiplataforma
+- Verificación de requisitos previos
+
+**Mejoras opcionales:**
+
+- GitHub Actions para integración continua
 - Dockerfile para aislamiento completo
-- Archivo CITATION.cff para referencia académica
+- Archivo `CITATION.cff` para referencia académica
 
 ---
 
 ## Conclusión
 
-**SÍ, subiéndolo a GitHub, cualquier persona con un mínimo de conocimiento técnico podrá:**
+**Sí: al publicarlo en GitHub, cualquier persona con conocimiento técnico básico podrá:**
 
-✅ Clonar el repo  
-✅ Instalar dependencias (solo pip install + instalador OpenSSL)  
-✅ Ejecutar verify_environment.py  
-✅ Ejecutar run.bat o run.sh  
-✅ Obtener resultados idénticos a los tuyos  
-✅ Customizar y extender el experimento  
+- Descargar una copia en ZIP
+- Instalar dependencias (`pip install` más OpenSSL en el sistema)
+- Ejecutar `verify_environment.py`
+- Ejecutar `run.bat` o `run.sh`
+- Obtener resultados comparables a los tuyos
+- Personalizar y ampliar el experimento
 
-**Tiempo total:** ~30 minutos (incluyendo instalación de herramientas si es primera vez)
+**Tiempo total:** unos 30 minutos (incluida la instalación de herramientas si es la primera vez).
 
 ---
 
 ## Recomendación
 
-1. ✅ Sube tal como está — **Reproducible**
-2. 📝 Opcionalmente agrega GitHub Actions para CI/CD
-3. 🐳 Opcionalmente agrega Dockerfile para garantizar aislamiento
+1. Publicar tal como está — **reproducible**
+2. Opcional: agregar GitHub Actions para CI/CD
+3. Opcional: agregar Dockerfile para garantizar el aislamiento del entorno
 
-Tu proyecto está en estado **production-ready** para GitHub. 🚀
-
+El proyecto está **listo para publicar en GitHub**.

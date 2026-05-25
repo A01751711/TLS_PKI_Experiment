@@ -35,7 +35,7 @@ python --version
 openssl version
 ```
 
-**First time setup?** → See [INSTALLATION.md](INSTALLATION.md) for platform-specific instructions.
+**¿Primera instalación?** → Consulta [INSTALLATION.md](INSTALLATION.md) para instrucciones por plataforma.
 
 ### Instalación de Dependencias en Python
 
@@ -57,12 +57,12 @@ Antes de ejecutar el experimento, verifica que todo esté configurado:
 python verify_environment.py
 ```
 
-This will check:
-- ✓ Python version
-- ✓ OpenSSL availability
-- ✓ Python packages (pandas, matplotlib)
-- ✓ Project directories
-- ✓ CA certificate bundle
+Esto verificará:
+- ✓ Versión de Python
+- ✓ OpenSSL disponible
+- ✓ Paquetes Python (pandas, matplotlib)
+- ✓ Directorio `scripts/` (y carpetas `data/`, `results/` como marcadores de posición si existen)
+- ✓ Bundle de certificados CA
 
 ---
 
@@ -73,12 +73,15 @@ TLS_PKI_Experiment/
 │
 ├── README.md                      # Este archivo
 ├── requirements.txt               # Dependencias Python
+├── verify_environment.py          # Verificación previa del entorno
+├── run.bat                        # Lanzador Windows
+├── run.sh                         # Lanzador Linux/macOS
 │
 ├── scripts/
-│   └── main.py                    # Script completo: mediciones + análisis TODO EN UNO
+│   └── main.py                    # Script completo: mediciones + análisis en un solo archivo
 │
-└── (Generated after each run):
-    tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/  ← Timestamped folder
+└── (generado en cada ejecución):
+    tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/  ← Carpeta con marca de tiempo
     ├── results/
     │   ├── raw_web_results.csv        # Todos los 10,000 handshakes
     │   ├── resumen_web_estadistico.csv # Estadísticas por sitio
@@ -99,26 +102,39 @@ TLS_PKI_Experiment/
     │   └── client_*.log               # Detalles de latencia
     │
     └── certs_extraidos/
-        └── [site_certificates]/
+        └── [certificados_por_sitio]/
 ```
 
 ---
 
 ## Flujo de Ejecución
 
-### One-Command Execution
+### Ejecución en un solo comando
+
+**Opción recomendada (todas las plataformas):**
 
 ```bash
 python scripts/main.py
 ```
 
-**Esto es TODO LO QUE NECESITAS EJECUTAR.** El script hace:
+**O con los lanzadores incluidos:**
+
+```bash
+# Windows (PowerShell o CMD):
+.\run.bat
+
+# Linux/macOS:
+chmod +x run.sh   # solo la primera vez
+bash run.sh
+```
+
+**Con eso basta.** El script hace:
 
 1. **Verificación de dependencias** (OpenSSL, Python)
-2. **Setup de CA bundle** (detección/descarga)
+2. **Configuración del bundle CA** (detección o descarga)
 3. **Inspección de cadenas TLS** de 10 sitios reales
 4. **Medición de 1000 handshakes por sitio** (~15-20 minutos)
-5. **Cálculo de estadísticas** (media, mediana, p95, stdev)
+5. **Cálculo de estadísticas** (media, mediana, p95, desviación estándar)
 6. **Generación de 6 gráficas comparativas**
 7. **Exportación a CSV y PNG**
 
@@ -127,13 +143,13 @@ python scripts/main.py
 tls_web_tls13_rsa_ecdsa_20260519_200420/
 ```
 
-Cada ejecución crea una NUEVA carpeta, permitiendo comparar múltiples runs.
+Cada ejecución crea una carpeta nueva, lo que permite comparar varias corridas.
 
 ---
 
 ## Descripción de Salidas
 
-### Archivos de Datos (carpeta `data/`)
+### Archivos de Datos (dentro de la carpeta con timestamp bajo `results/`)
 
 #### `raw_web_results.csv`
 Registro completo de cada handshake TLS.
@@ -163,7 +179,7 @@ google,google.com,443,2,88.102,1,2,ecdsa_p256,3245,1892,TLS1.3,CAfile,0
 ```
 
 #### `chains_detectadas.csv`
-Resumen único de cada cadena detectada por sitio.
+Resumen único de cada cadena detectada por sitio (generado durante la inspección).
 
 Columnas:
 | Campo | Descripción |
@@ -179,21 +195,21 @@ Columnas:
 | `subjects` | Asuntos (DN) de los certificados separados por `\|` |
 
 #### `fallos.csv`
-Registro de errores durante mediciones.
+Registro de errores durante mediciones (si los hay).
 
 Columnas: `stage`, `label`, `host`, `port`, `repetition`, `error`
 
 ---
 
-### Archivos de Resultados (carpeta `results/`)
+### Archivos de Resultados (también dentro de la carpeta con timestamp)
 
-#### `resumen_estadistico.csv`
+#### `resumen_web_estadistico.csv`
 Estadísticas por sitio.
 
 Columnas principales:
 - `host`, `server_cert_algorithm`, `detected_depth`
 - `n` (número de handshakes exitosos)
-- `mean_ms`, `median_ms`, `stdev_ms`, `p95_ms`, `min_ms`, `max_ms`
+- `mean_ms`, `median_ms`, `stdev_ms` (desviación estándar), `p95_ms`, `min_ms`, `max_ms`
 - `pem_bytes`, `der_bytes`
 
 #### `comparativo_algoritmo.csv`
@@ -207,7 +223,7 @@ Columnas:
 - `avg_p95_ms`
 - `avg_der_bytes`, `avg_depth`
 
-#### Visualizaciones (`results/plots/`)
+#### Visualizaciones (`plots/` dentro de la carpeta con timestamp)
 
 1. **comparativo_latencia_sitio_rsa_vs_ecdsa.png**  
    Gráfica de barras: latencia mediana por sitio, coloreada por algoritmo.
@@ -253,7 +269,7 @@ REPETITIONS = 1000  # Cambiar a tu valor
 
 ### Forzar Modo Inseguro (sin CA bundle)
 
-En `scripts/01_collect_data.py`, comenta la verificación:
+En `scripts/main.py`, comenta la verificación:
 
 ```python
 # VERIFY_ARGS = ["-CAfile", str(CA_BUNDLE)]
@@ -276,13 +292,13 @@ Este proyecto garantiza **reproducibilidad completa** porque:
 Para reproducir en otro entorno:
 
 ```bash
-git clone <repo>
+# Descarga una copia en ZIP desde el repositorio y extráela
+# Luego:
 cd TLS_PKI_Experiment
 python -m venv venv
 source venv/bin/activate  # En Windows: venv\Scripts\activate
 pip install -r requirements.txt
-python scripts/01_collect_data.py
-python scripts/02_analyze_results.py
+python scripts/main.py
 ```
 
 ---
@@ -307,7 +323,7 @@ openssl req -new -x509 -key key.pem -out cert.pem
 El script:
 - Busca CA bundle en locaciones estándar (Git, curl, sistema)
 - Intenta descargar `cacert.pem` desde `curl.se` si no lo encuentra
-- Fallback a modo inseguro (`-verify 0`) si no hay CA bundle
+- Respaldo en modo inseguro (`-verify 0`) si no hay bundle CA
 
 ### Dependencia: OpenSSL
 
@@ -323,7 +339,7 @@ En Windows, instálalo vía:
 
 ---
 
-## Troubleshooting
+## Solución de problemas
 
 ### Error: "openssl no encontrado en PATH"
 
@@ -347,7 +363,7 @@ y colócalo en el directorio raíz del proyecto.
 
 **Posible causa:** Red lenta o sitio inaccesible.
 
-**Solución:** Aumenta `TIMEOUT_SECONDS` en `scripts/01_collect_data.py` o elimina sitios problemáticos de `TARGETS`.
+**Solución:** Aumenta `TIMEOUT_SECONDS` en `scripts/main.py` o elimina sitios problemáticos de `TARGETS`.
 
 ### matplotlib no disponible
 
@@ -379,8 +395,3 @@ Este proyecto es de uso educativo. Adapta según tus necesidades.
 
 **Última actualización:** Mayo 2026
 
-#   T L S _ P K I _ E x p e r i m e n t 
- 
- #   T L S _ P K I _ E x p e r i m e n t 
- 
- 

@@ -1,59 +1,67 @@
-# Installation and Verification Guide
+# Guía de instalación y verificación
 
-## Pre-Flight Checks
+## Comprobaciones previas
 
-Before running the experiment, verify your environment:
+Antes de ejecutar el experimento, verifica tu entorno:
 
 ```bash
 python verify_environment.py
 ```
 
-This will check:
+El script comprueba:
 - ✓ Python 3.7+
-- ✓ OpenSSL availability
-- ✓ Required Python packages (pandas, matplotlib)
-- ✓ Project directories
-- ✓ CA certificate bundle
+- ✓ OpenSSL disponible en PATH
+- ✓ Paquetes Python requeridos (pandas, matplotlib)
+- ✓ Directorio `scripts/`
+- ✓ Carpetas opcionales `data/` y `results/` (marcadores de posición)
+- ✓ Bundle de certificados CA (local o descarga automática en la primera ejecución)
+
+Si `verify_environment.py` indica que faltan `data/` o `results/`, créalas vacías en la raíz del proyecto:
+
+```bash
+mkdir data results          # Linux/macOS
+mkdir data; mkdir results   # PowerShell en Windows
+```
 
 ---
 
-## Platform-Specific Setup
+## Configuración por plataforma
 
 ### Windows
 
-1. **Install Python 3.7+**
-   - Download from https://www.python.org/downloads/
-   - ✓ Check "Add Python to PATH" during installation
+1. **Instalar Python 3.7+**
+   - Descarga desde https://www.python.org/downloads/
+   - ✓ Marca «Add Python to PATH» durante la instalación
 
-2. **Install OpenSSL**
-   - Option A: **Git for Windows** (easiest)
-     - Download from https://git-scm.com/download/win
-     - Installs OpenSSL automatically
+2. **Instalar OpenSSL**
+   - Opción A: **Git for Windows** (la más sencilla)
+     - Descarga desde https://git-scm.com/download/win
+     - Incluye OpenSSL automáticamente
    
-   - Option B: **Direct OpenSSL**
-     - Download from https://slproweb.com/products/Win32OpenSSL.html
-     - Add to PATH
+   - Opción B: **OpenSSL directo**
+     - Descarga desde https://slproweb.com/products/Win32OpenSSL.html
+     - Añade la ruta al PATH
 
-3. **Verify installation**
+3. **Verificar instalación**
    ```powershell
    python --version
    openssl version
    pip --version
    ```
 
-4. **Install Python dependencies**
+4. **Instalar dependencias Python**
    ```powershell
    pip install -r requirements.txt
    ```
 
-5. **Verify environment**
+5. **Verificar entorno**
    ```powershell
    python verify_environment.py
    ```
 
-6. **Run experiment**
+6. **Ejecutar experimento**
    ```powershell
-   python run.bat
+   .\run.bat
    ```
 
 ---
@@ -61,23 +69,23 @@ This will check:
 ### Linux (Ubuntu/Debian)
 
 ```bash
-# 1. Install system dependencies
+# 1. Instalar dependencias del sistema
 sudo apt-get update
 sudo apt-get install python3 python3-pip openssl
 
-# 2. Verify Python version
-python3 --version  # Should be 3.7+
+# 2. Verificar versión de Python
+python3 --version  # Debe ser 3.7+
 
-# 3. Install Python packages
+# 3. Instalar paquetes Python
 pip3 install -r requirements.txt
 
-# 4. Make run.sh executable
+# 4. Hacer ejecutable run.sh (solo la primera vez)
 chmod +x run.sh
 
-# 5. Verify environment
+# 5. Verificar entorno
 python3 verify_environment.py
 
-# 6. Run experiment
+# 6. Ejecutar experimento
 bash run.sh
 ```
 
@@ -86,57 +94,59 @@ bash run.sh
 ### macOS
 
 ```bash
-# 1. Install Homebrew (if not already installed)
+# 1. Instalar Homebrew (si aún no lo tienes)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# 2. Install dependencies via Homebrew
+# 2. Instalar dependencias con Homebrew
 brew install python3 openssl
 
-# 3. Verify installation
+# 3. Verificar instalación
 python3 --version
 openssl version
 pip3 --version
 
-# 4. Install Python packages
+# 4. Instalar paquetes Python
 pip3 install -r requirements.txt
 
-# 5. Make run.sh executable
+# 5. Hacer ejecutable run.sh (solo la primera vez)
 chmod +x run.sh
 
-# 6. Verify environment
+# 6. Verificar entorno
 python3 verify_environment.py
 
-# 7. Run experiment
+# 7. Ejecutar experimento
 bash run.sh
 ```
 
 ---
 
-## Troubleshooting
+## Solución de problemas
 
-### "python: command not found"
+### «python: command not found»
+
 **Windows:**
 ```powershell
-# Check PATH
+# Revisar PATH
 $env:PATH -split ";"
 
-# If Python not in PATH, reinstall with "Add to PATH" option
+# Si Python no está en PATH, reinstala marcando «Add to PATH»
 ```
 
 **Linux/macOS:**
 ```bash
 which python3
-# If not found: sudo apt-get install python3 (Linux)
-#               brew install python3 (macOS)
+# Si no aparece: sudo apt-get install python3 (Linux)
+#                brew install python3 (macOS)
 ```
 
 ---
 
-### "openssl: command not found"
+### «openssl: command not found»
+
 **Windows:**
 ```powershell
-# Install Git for Windows from https://git-scm.com/download/win
-# Or install OpenSSL directly from https://slproweb.com/products/Win32OpenSSL.html
+# Instala Git for Windows desde https://git-scm.com/download/win
+# O OpenSSL desde https://slproweb.com/products/Win32OpenSSL.html
 ```
 
 **Linux:**
@@ -151,21 +161,23 @@ brew install openssl
 
 ---
 
-### "ModuleNotFoundError: No module named 'pandas' / 'matplotlib'"
+### «ModuleNotFoundError: No module named 'pandas' / 'matplotlib'»
+
 ```bash
 pip install -r requirements.txt
 
-# If using Python 3:
+# Con Python 3 explícito:
 pip3 install -r requirements.txt
 
-# If still failing:
+# Si sigue fallando:
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
 ---
 
-### "Permission denied: run.sh" (Linux/macOS)
+### «Permission denied: run.sh» (Linux/macOS)
+
 ```bash
 chmod +x run.sh
 bash run.sh
@@ -173,59 +185,38 @@ bash run.sh
 
 ---
 
-### Network errors downloading CA bundle
-If the automatic CA bundle download fails:
+### Errores de red al descargar el bundle CA
+
+Si la descarga automática del bundle CA falla:
 
 ```bash
-# Manual download
+# Descarga manual
 curl -o cacert.pem https://curl.se/ca/cacert.pem
 
-# Place in project root
-# (The scripts will find it automatically)
+# Colócalo en la raíz del proyecto
+# (scripts/main.py lo detectará automáticamente)
 ```
 
 ---
 
-## Minimal Installation (Quick Test)
+## Verificación rápida (sin ejecutar el experimento completo)
 
-If you just want to verify everything works without waiting 15 minutes:
+Para comprobar que todo está listo sin esperar 15–20 minutos de mediciones:
 
-1. Create a test script `test_environment.py`:
-```python
-import csv
-from pathlib import Path
-from scripts.utils import log, ok, verify_openssl, setup_ca_bundle
-
-print("Testing imports... ", end="")
-ok("✓")
-
-print("Testing OpenSSL... ", end="")
-if verify_openssl():
-    ok("✓")
-else:
-    print("✗ OpenSSL not found")
-    exit(1)
-
-print("Testing CA bundle setup... ", end="")
-verify_args, verify_mode = setup_ca_bundle()
-ok("✓")
-
-print("\nAll systems go!")
-```
-
-2. Run it:
 ```bash
-python test_environment.py
+python verify_environment.py
 ```
+
+Ese script es la única verificación previa necesaria. No hace falta ningún otro script auxiliar.
 
 ---
 
-## Automated CI/CD Verification
+## Verificación automatizada en CI/CD
 
-If running in CI/CD (GitHub Actions, etc.):
+Si usas GitHub Actions u otro CI:
 
 ```yaml
-name: Verify Environment
+name: Verificar entorno
 
 on: [push]
 
@@ -233,80 +224,81 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Configurar Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       
-      - name: Install system dependencies
+      - name: Instalar dependencias del sistema
         run: |
           sudo apt-get update
           sudo apt-get install -y openssl
       
-      - name: Install Python dependencies
+      - name: Instalar dependencias Python
         run: pip install -r requirements.txt
       
-      - name: Verify environment
-        run: python verify_environment.py
+      - name: Crear carpetas de marcador de posición
+        run: mkdir -p data results
       
-      - name: Run quick test
-        run: python test_environment.py
+      - name: Verificar entorno
+        run: python verify_environment.py
 ```
 
 ---
 
-## What Gets Verified
+## Qué se verifica
 
-| Item | Purpose | How to Fix |
-|------|---------|-----------|
-| Python 3.7+ | Language runtime | Install Python from python.org |
-| OpenSSL | Certificate inspection | See platform-specific guide above |
-| pandas | Data analysis | `pip install pandas` |
-| matplotlib | Visualization | `pip install matplotlib` |
-| data/ directory | Raw data storage | Already created in project |
-| results/ directory | Output storage | Already created in project |
-| Permissions (Unix) | Script execution | `chmod +x run.sh` |
+| Elemento | Propósito | Cómo corregirlo |
+|----------|-----------|-----------------|
+| Python 3.7+ | Intérprete | Instalar desde python.org |
+| OpenSSL | Inspección de certificados | Ver guía por plataforma arriba |
+| pandas | Análisis de datos | `pip install pandas` |
+| matplotlib | Visualización | `pip install matplotlib` |
+| `data/` | Carpeta opcional de marcador de posición | `mkdir data` |
+| `results/` | Carpeta opcional de marcador de posición | `mkdir results` |
+| Permisos (Unix) | Ejecución de `run.sh` | `chmod +x run.sh` |
 
 ---
 
-## Success Indicators
+## Indicadores de éxito
 
-After running `python verify_environment.py`, you should see:
+Tras ejecutar `python verify_environment.py`, deberías ver algo como:
 
 ```
-========================================================================
- Environment Verification for TLS PKI Experiment
-========================================================================
+======================================================================
+ Verificación de entorno — Experimento TLS PKI
+======================================================================
 
 Python:
-  [✓] Python 3.7+ (found 3.9)
+  [✓] Python 3.7+ (detectado 3.9)
 
-System Dependencies:
-  [✓] OpenSSL in PATH
+Dependencias del sistema:
+  [✓] OpenSSL en PATH
        → OpenSSL 1.1.1 ...
 
-Python Packages:
+Paquetes Python:
   [✓] pandas
   [✓] matplotlib
 
-File System:
-  [✓] data/ directory exists
-  [✓] results/ directory exists
-  [✓] scripts/ directory exists
+Sistema de archivos:
+  [✓] existe el directorio data/
+  [✓] existe el directorio results/
+  [✓] existe el directorio scripts/
 
-Certificate Verification:
-  [i] CA bundle available (or will be auto-downloaded)
+Verificación de certificados:
+  [i] Bundle CA no encontrado localmente (se intentará descargar en la primera ejecución)
 
-========================================================================
- ✓ All checks passed! Ready to run.
+======================================================================
+ ✓ Todas las comprobaciones pasaron. Listo para ejecutar.
 
-   Execute:
-     python run.bat      (Windows)
+   Ejecuta:
+     .\run.bat           (Windows)
      bash run.sh         (Linux/macOS)
-========================================================================
+======================================================================
 ```
 
-If you see all ✓ marks, you're good to go!
+Si todas las marcas son ✓, puedes ejecutar el experimento.
 
+**Última actualización:** Mayo 2026

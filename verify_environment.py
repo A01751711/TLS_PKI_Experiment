@@ -2,10 +2,10 @@
 """
 verify_environment.py
 
-Verify that the environment is properly set up for the experiment.
-Run this BEFORE executing the main scripts.
+Verifica que el entorno esté listo para el experimento.
+Ejecútalo ANTES de scripts/main.py, run.bat o run.sh.
 
-Usage:
+Uso:
     python verify_environment.py
 """
 
@@ -14,28 +14,37 @@ import shutil
 import subprocess
 from pathlib import Path
 
+# Consola Windows: intentar UTF-8 para mostrar ✓/✗/→
+if hasattr(sys.stdout, "reconfigure"):
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+
 def check(condition: bool, message: str) -> None:
-    """Print check result."""
+    """Imprime el resultado de una comprobación."""
     status = "✓" if condition else "✗"
     print(f"  [{status}] {message}")
     if not condition:
-        print(f"       ↳ This is required. See README.md for installation instructions.")
+        print("       ↳ Es obligatorio. Consulta README.md o INSTALLATION.md.")
+
 
 print("\n" + "=" * 70)
-print(" Environment Verification for TLS PKI Experiment")
+print(" Verificación de entorno — Experimento TLS PKI")
 print("=" * 70 + "\n")
 
 all_ok = True
 
-# Python version
+# Versión de Python
 print("Python:")
 py_version = sys.version_info
-check(py_version >= (3, 7), f"Python 3.7+ (found {py_version.major}.{py_version.minor})")
+check(py_version >= (3, 7), f"Python 3.7+ (detectado {py_version.major}.{py_version.minor})")
 
 # OpenSSL
-print("\nSystem Dependencies:")
+print("\nDependencias del sistema:")
 openssl_available = shutil.which("openssl") is not None
-check(openssl_available, "OpenSSL in PATH")
+check(openssl_available, "OpenSSL en PATH")
 all_ok &= openssl_available
 
 if openssl_available:
@@ -46,50 +55,55 @@ if openssl_available:
     except Exception:
         pass
 
-# Python packages
-print("\nPython Packages:")
+# Paquetes Python
+print("\nPaquetes Python:")
 packages = ["pandas", "matplotlib"]
 for pkg in packages:
     try:
         __import__(pkg)
-        check(True, f"{pkg}")
+        check(True, pkg)
     except ImportError:
-        check(False, f"{pkg}")
+        check(False, pkg)
         all_ok = False
 
-# Writable directories
-print("\nFile System:")
+# Directorios
+print("\nSistema de archivos:")
 project_root = Path(__file__).parent
-check((project_root / "data").is_dir(), "data/ directory exists")
-check((project_root / "results").is_dir(), "results/ directory exists")
-check((project_root / "scripts").is_dir(), "scripts/ directory exists")
+data_ok = (project_root / "data").is_dir()
+results_ok = (project_root / "results").is_dir()
+scripts_ok = (project_root / "scripts").is_dir()
+check(data_ok, "existe el directorio data/")
+check(results_ok, "existe el directorio results/")
+check(scripts_ok, "existe el directorio scripts/")
+all_ok &= data_ok and results_ok and scripts_ok
+if not data_ok or not results_ok:
+    print("       ↳ Crea carpetas vacías: mkdir data results  (o en Windows: mkdir data; mkdir results)")
 
-# CA Bundle
-print("\nCertificate Verification:")
+# Bundle CA
+print("\nVerificación de certificados:")
 ca_paths = [
     project_root / "cacert.pem",
     Path.home() / ".ssl" / "cacert.pem",
 ]
 ca_found = any(p.exists() for p in ca_paths)
 if ca_found:
-    check(True, "CA bundle available (or will be auto-downloaded)")
+    check(True, "bundle CA disponible localmente")
 else:
-    print(f"  [i] CA bundle not found locally (auto-download will attempt on first run)")
+    print("  [i] Bundle CA no encontrado localmente (se intentará descargar en la primera ejecución)")
 
-# Summary
+# Resumen
 print("\n" + "=" * 70)
 if all_ok:
-    print(" ✓ All checks passed! Ready to run.")
-    print("\n   Execute:")
+    print(" ✓ Todas las comprobaciones pasaron. Listo para ejecutar.")
+    print("\n   Ejecuta:")
     print("     python run.bat      (Windows)")
     print("     bash run.sh         (Linux/macOS)")
 else:
-    print(" ✗ Some checks failed. See above for required installations.")
-    print("\n   Installation help:")
+    print(" ✗ Algunas comprobaciones fallaron. Revisa los mensajes anteriores.")
+    print("\n   Ayuda de instalación:")
     print("     pip install -r requirements.txt")
-    print("     See README.md for OpenSSL installation.")
+    print("     Ver INSTALLATION.md para instalar OpenSSL.")
 
 print("=" * 70 + "\n")
 
 sys.exit(0 if all_ok else 1)
-

@@ -1,172 +1,150 @@
-# Project Structure Summary
+# Resumen de la estructura del proyecto
 
 ```
 TLS_PKI_Experiment/
 │
-├── 📄 README.md                    ★ Main documentation (objective, setup, usage)
-├── 📄 QUICKSTART.md                ★ 5-minute getting started guide
-├── 📄 requirements.txt             ★ Python dependencies
-├── 📄 .gitignore                   ★ Version control exclusions
+├── 📄 README.md                    ★ Documentación principal
+├── 📄 QUICKSTART.md                ★ Inicio en 5 minutos
+├── 📄 INSTALLATION.md              ★ Instalación por plataforma
+├── 📄 verify_environment.py        ★ Verificación previa
+├── 📄 requirements.txt             ★ Dependencias Python
+├── 📄 .gitignore                   ★ Exclusiones de Git
 │
-├── 🔨 run.bat                      ★ Windows one-click execution
-├── 🔨 run.sh                       ★ Linux/macOS one-click execution
+├── 🔨 run.bat                      ★ Ejecución en un clic (Windows)
+├── 🔨 run.sh                       ★ Ejecución en un clic (Linux/macOS)
 │
 ├── 📁 scripts/
-│   └── 📜 main.py                  ★ Complete experiment pipeline
-│       ├── Verify dependencies (OpenSSL, Python)
-│       ├── Setup CA bundle for verification
-│       ├── Inspect certificate chains from live servers
-│       ├── Perform 1000 TLS handshake measurements per site
-│       ├── Export raw measurements to CSV
-│       ├── Calculate statistics (mean, median, p95, stdev)
-│       ├── Compare RSA-2048 vs ECDSA P-256
-│       ├── Generate 6 comparative plots with matplotlib
-│       └── Export summary tables to CSV
+│   └── 📜 main.py                  ★ Flujo completo del experimento
+│       ├── Verificar dependencias (OpenSSL, Python)
+│       ├── Configurar bundle CA
+│       ├── Inspeccionar cadenas en servidores reales
+│       ├── 1000 mediciones TLS por sitio
+│       ├── Calcular estadísticas (media, mediana, p95, desv.)
+│       ├── Comparar RSA-2048 vs ECDSA P-256
+│       ├── Generar 6 gráficas con matplotlib
+│       └── Exportar a carpeta con timestamp
 │
-├── 📁 data/                        ★ Raw experimental data
-│   ├── raw_web_results.csv         (All 10,000+ handshake measurements)
-│   ├── chains_detectadas.csv       (Summary of detected chains)
-│   ├── fallos.csv                  (Error log)
-│   │
-│   └── 📁 logs/                    (OpenSSL debug logs)
-│       ├── inspect_*.log
-│       ├── client_*.log
-│       └── inspect_*_fallback.log
-│
-│   └── 📁 certs_extraidos/         (Extracted certificates)
-│       ├── example_example_com/
-│       │   ├── cert_0.pem
-│       │   ├── cert_1.pem
-│       │   └── cert_2.pem
-│       ├── google_google_com/
-│       └── ... (one per site)
-│
-└── 📁 results/                     ★ Analysis outputs (regenerable)
-    │
-    ├── resumen_estadistico.csv     (Per-site statistics)
-    │   ├── host, algorithm, depth
-    │   ├── n, mean_ms, median_ms, stdev_ms
-    │   ├── p95_ms, min_ms, max_ms
-    │   └── pem_bytes, der_bytes
-    │
-    ├── comparativo_algoritmo.csv   (Algorithm comparison)
-    │   ├── server_cert_algorithm
-    │   ├── sites, total_handshakes
-    │   ├── avg_median_ms, median_of_medians_ms
-    │   ├── avg_p95_ms
-    │   └── avg_der_bytes, avg_depth
-    │
-    └── 📁 plots/                   (6 Visualization PNG files)
-        ├── comparativo_latencia_sitio_rsa_vs_ecdsa.png
-        │   (Bar chart: median latency per site, colored by algorithm)
+└── 🔍 Generado en cada ejecución:
+    └── tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/
         │
-        ├── boxplot_rsa_vs_ecdsa.png
-        │   (Boxplot: latency distribution by algorithm)
+        ├── 📁 results/             ★ CSV y análisis
+        │   ├── raw_web_results.csv
+        │   ├── chains_detectadas.csv
+        │   ├── fallos.csv
+        │   ├── resumen_web_estadistico.csv
+        │   └── comparativo_algoritmo.csv
         │
-        ├── promedio_medianas_por_algoritmo.png
-        │   (Bar chart: average median latency per algorithm)
+        ├── 📁 plots/               ★ 6 PNG comparativos
+        │   ├── comparativo_latencia_sitio_rsa_vs_ecdsa.png
+        │   ├── boxplot_rsa_vs_ecdsa.png
+        │   ├── promedio_medianas_por_algoritmo.png
+        │   ├── tamano_der_promedio_rsa_vs_ecdsa.png
+        │   ├── scatter_latencia_vs_der_por_algoritmo.png
+        │   └── scatter_latencia_vs_profundidad_por_algoritmo.png
         │
-        ├── tamano_der_promedio_rsa_vs_ecdsa.png
-        │   (Bar chart: average DER chain size per algorithm)
+        ├── 📁 logs/
+        │   ├── inspect_*.log
+        │   └── client_*.log
         │
-        ├── scatter_latencia_vs_der_por_algoritmo.png
-        │   (Scatter: latency vs DER size, colored by algorithm)
-        │
-        └── scatter_latencia_vs_profundidad_por_algoritmo.png
-            (Scatter: latency vs chain depth, colored by algorithm)
+        └── 📁 certs_extraidos/
 ```
 
-## Key Design Decisions
+## Decisiones de diseño
 
-### ✓ Single Unified Script
-- **main.py**: Todas las operaciones (medición, análisis, visualización) en un único archivo
-- Sin dependencias entre scripts
-- Ejecución simple: `python scripts/main.py`
+### ✓ Script unificado
 
-### ✓ Timestamped Output Folders
-- Cada ejecución crea una carpeta nueva con timestamp
-- Permite comparar múltiples runs
-- No sobrescribe resultados anteriores
+- **main.py:** medición, análisis y visualización en un solo archivo
+- Sin dependencias entre varios scripts
+- Ejecución: `python scripts/main.py`, `run.bat` o `run.sh`
+
+### ✓ Carpetas de salida con timestamp
+
+- Cada ejecución crea `tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/`
+- Permite comparar varias corridas sin sobrescribir datos
 - Ejemplo: `tls_web_tls13_rsa_ecdsa_20260519_200420/`
 
-### ✓ Data Organization (dentro de cada carpeta timestamped)
-- **results/**: CSV y análisis procesados
-- **plots/**: 6 gráficas PNG comparativas
-- **logs/**: Detalles OpenSSL para debugging
-- **certs_extraidos/**: Certificados PEM extraídos
+### ✓ Organización de datos (dentro de la carpeta con marca de tiempo)
+
+- **results/** — CSV y tablas procesadas
+- **plots/** — Gráficas PNG (hermana de `results/`, no dentro de ella)
+- **logs/** — Traza OpenSSL para depuración
+- **certs_extraidos/** — Certificados PEM por sitio
 
 ### ✓ Reproducibilidad
-- Todas las dependencias en `requirements.txt`
-- No requiere configuración previa
-- Auto-detección de CA bundle + descarga fallback
-- Logging completo de errores y decisiones
-- **run.bat/run.sh**: One-command execution
-- Inline comments in code
 
-### ✓ Cross-Platform
-- Works on Windows, Linux, macOS
-- Uses Python 3.7+ compatibility
-- Platform-specific run scripts provided
+- Dependencias en `requirements.txt`
+- Detección y descarga automática del bundle CA
+- Registro de errores en `results/fallos.csv`
+- **run.bat** / **run.sh** para ejecución en un comando
+
+### ✓ Multiplataforma
+
+- Windows, Linux y macOS
+- Python 3.7+
+- Scripts de lanzamiento por SO
 
 ---
 
-## Execution Flow
+## Flujo de ejecución
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ User: python run.bat  (or run.sh on Linux/macOS)            │
+│ Usuario: .\run.bat  (o bash run.sh en Linux/macOS)          │
+│ (o directamente: python scripts/main.py)                    │
 └────────────────────────┬────────────────────────────────────┘
                          │
                          ▼
         ┌────────────────────────────────┐
-        │ 01_collect_data.py             │
+        │ scripts/main.py                │
         ├────────────────────────────────┤
-        │ 1. Verify OpenSSL + Python     │
-        │ 2. Setup CA bundle             │
-        │ 3. Inspect 10 HTTPS sites      │
-        │ 4. Run 1000 handshakes × 10    │
-        │ 5. Generate data/*.csv         │
+        │ 1. Verificar OpenSSL + Python  │
+        │ 2. Configurar bundle CA        │
+        │ 3. Inspeccionar 10 sitios HTTPS│
+        │ 4. 1000 handshakes × 10 sitios │
+        │ 5. Calcular estadísticas       │
+        │ 6. Generar gráficas            │
+        │ 7. Exportar resultados         │
         └────────────┬───────────────────┘
-                     │ (outputs: data/*.csv)
+                     │
                      ▼
-        ┌────────────────────────────────┐
-        │ 02_analyze_results.py          │
-        ├────────────────────────────────┤
-        │ 1. Read data/raw_web_results   │
-        │ 2. Calculate statistics        │
-        │ 3. Group by algorithm          │
-        │ 4. Generate matplotlib plots   │
-        │ 5. Export results/*.csv        │
-        └────────────┬───────────────────┘
-                     │ (outputs: results/*.csv + results/plots/*.png)
+        tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/
+        ├── results/
+        ├── plots/
+        ├── logs/
+        └── certs_extraidos/
+                     │
                      ▼
                 ┌─────────────┐
-                │ ✓ Complete  │
+                │ ✓ Completo  │
                 └─────────────┘
 ```
 
 ---
 
-## File Size Estimates
+## Tamaños aproximados por ejecución
 
-| File | Size | Notes |
-|------|------|-------|
-| data/raw_web_results.csv | ~2-5 MB | 10,000+ measurements |
-| data/chains_detectadas.csv | ~10 KB | 10 site summaries |
-| data/fallos.csv | ~1-50 KB | Error records |
-| results/resumen_estadistico.csv | ~15 KB | 10 sites × 15 columns |
-| results/comparativo_algoritmo.csv | ~1 KB | 2-3 algorithm rows |
-| results/plots/*.png | ~200-400 KB | 6 plots @ 150 DPI |
+| Archivo / carpeta | Tamaño | Notas |
+|-------------------|--------|-------|
+| results/raw_web_results.csv | ~2–5 MB | >10 000 filas |
+| results/chains_detectadas.csv | ~10 KB | ~10 sitios |
+| results/fallos.csv | ~1–50 KB | Vacío si no hay errores |
+| results/resumen_web_estadistico.csv | ~15 KB | |
+| results/comparativo_algoritmo.csv | ~1 KB | |
+| plots/*.png | ~200–400 KB c/u | 6 gráficas @ 150 DPI |
+| logs/ | ~1–5 MB | |
+| certs_extraidos/ | ~500 KB | |
 
-**Total disk usage**: ~10-15 MB (mostly raw CSV data)
+**Uso de disco por corrida:** ~10–15 MB
 
 ---
 
-## Next Steps for User
+## Pasos para el usuario
 
-1. ✓ Review README.md for full documentation
-2. ✓ Install dependencies: `pip install -r requirements.txt`
-3. ✓ Run experiment: `python run.bat` (Windows) or `bash run.sh` (Linux/macOS)
-4. ✓ View results in `results/` folder
-5. ✓ Customize in `scripts/01_collect_data.py` (TARGETS list, REPETITIONS, etc.)
+1. ✓ Revisar [README.md](README.md)
+2. ✓ `pip install -r requirements.txt`
+3. ✓ `python verify_environment.py`
+4. ✓ Ejecutar: `.\run.bat` (Windows) o `bash run.sh` (Linux/macOS)
+5. ✓ Revisar la carpeta `tls_web_tls13_rsa_ecdsa_*` más reciente
+6. ✓ Personalizar `TARGETS` y `REPETITIONS` en `scripts/main.py`
 
+**Última actualización:** Mayo 2026

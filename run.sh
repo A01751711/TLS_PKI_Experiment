@@ -1,11 +1,11 @@
 #!/bin/bash
-# run.sh - Execute the complete TLS PKI experiment pipeline on Linux/macOS
+# run.sh - Ejecuta el experimento TLS PKI completo en Linux/macOS
 
 set -e
 
 echo ""
 echo "============================================================================"
-echo " TLS PKI Experiment - TLS 1.3 Handshake Measurement"
+echo " Experimento TLS PKI - Medicion de handshakes TLS 1.3"
 echo "============================================================================"
 echo ""
 

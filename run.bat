@@ -1,9 +1,9 @@
 @echo off
-REM run.bat - Execute the complete TLS PKI experiment pipeline on Windows
+REM run.bat - Ejecuta el experimento TLS PKI completo en Windows
 
 echo.
 echo ============================================================================
-echo  TLS PKI Experiment - TLS 1.3 Handshake Measurement
+echo  Experimento TLS PKI - Medicion de handshakes TLS 1.3
 echo ============================================================================
 echo.
 

@@ -1,20 +1,20 @@
-# Quick Start Guide
+# Guía rápida de inicio
 
-## 5-Minute Quick Start
+## Configuración (5 minutos) + ejecución del experimento (~20 minutos)
 
-### 1. Install Dependencies
+### 1. Instalar Dependencias
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Verify Environment (optional but recommended)
+### 2. Verificar Entorno (opcional pero recomendado)
 ```bash
 python verify_environment.py
 ```
 
-This checks Python version, OpenSSL, packages, and directories. See [INSTALLATION.md](INSTALLATION.md) for setup help.
+Esto verifica versión de Python, OpenSSL, paquetes y directorios. Ver [INSTALLATION.md](INSTALLATION.md) para instalación por plataforma.
 
-### 3. Run Complete Experiment
+### 3. Ejecutar Experimento Completo
 
 **Windows:**
 ```bash
@@ -23,82 +23,83 @@ run.bat
 
 **Linux/macOS:**
 ```bash
-# First time: make script executable
+# Primera vez: hacer script ejecutable
 chmod +x run.sh
 
-# Then run:
+# Luego ejecutar:
 ./run.sh
 ```
 
-**Or manually (all platforms):**
+**O manualmente (todas las plataformas):**
 ```bash
 python scripts/main.py
 ```
 
-### 4. Wait for Results (~15-20 minutes)
+### 4. Esperar Resultados (~15-20 minutos)
 
-The script will:
-- Measure 10 websites × 1000 handshakes each
-- Show progress in the terminal
-- Create a timestamped folder with all outputs
+El script hará:
+- Medir 10 sitios web × 1000 handshakes cada uno
+- Mostrar progreso en la terminal
+- Crear una carpeta con marca de tiempo con todas las salidas
 
-**Output folder example:**
+**Ejemplo de carpeta de salida:**
 ```
 tls_web_tls13_rsa_ecdsa_20260519_200420/
 ├── results/
-│   ├── raw_web_results.csv           ← All 10,000 measurements
-│   ├── resumen_web_estadistico.csv   ← Per-site stats
-│   ├── comparativo_algoritmo.csv     ← RSA vs ECDSA
+│   ├── raw_web_results.csv           ← Todos los 10,000 mediciones
+│   ├── resumen_web_estadistico.csv   ← Estadísticas por sitio
+│   ├── comparativo_algoritmo.csv     ← Comparación RSA vs ECDSA
 │   └── ...
 ├── plots/
 │   ├── comparativo_latencia_sitio_rsa_vs_ecdsa.png
 │   ├── boxplot_rsa_vs_ecdsa.png
-│   └── ... (4 more PNG files)
+│   └── ... (4 más archivos PNG)
 └── logs/
+```
 
-## Troubleshooting
+## Solución de problemas
 
-### OpenSSL not found
-- **Windows:** Install Git for Windows (includes OpenSSL)
+### OpenSSL no encontrado
+- **Windows:** Instalar Git for Windows (incluye OpenSSL)
 - **Linux:** `sudo apt-get install openssl`
 - **macOS:** `brew install openssl`
 
-### matplotlib not available
+### matplotlib no disponible
 ```bash
 pip install matplotlib
 ```
 
-### Network issues
-Edit `scripts/main.py` and modify `TARGETS` list or increase `TIMEOUT_SECONDS`.
+### Problemas de red
+Editar `scripts/main.py` y modificar la lista `TARGETS` o aumentar `TIMEOUT_SECONDS`.
 
-## Custom Configuration
+## Configuración Personalizada
 
-### Change number of repetitions
-Edit `scripts/main.py`:
+### Cambiar número de repeticiones
+Editar `scripts/main.py`:
 ```python
-REPETITIONS = 500  # default is 1000
+REPETITIONS = 500  # por defecto es 1000
 ```
 
-### Add/remove websites
-Edit `scripts/main.py`:
+### Agregar/remover sitios web
+Editar `scripts/main.py`:
 ```python
 TARGETS = [
     {"label": "example", "host": "example.com", "port": 443},
-    # Add your own sites here
+    # Agrega tus propios sitios aquí
 ]
 ```
 
-### Increase timeout
-Edit `scripts/main.py`:
+### Aumentar timeout
+Editar `scripts/main.py`:
 ```python
-TIMEOUT_SECONDS = 15  # default is 10
+TIMEOUT_SECONDS = 15  # por defecto es 10
 ```
 
-## Output Interpretation
+## Interpretación de Salida
 
-- **resumen_estadistico.csv**: Per-site statistics (median, p95, stdev, etc.)
-- **comparativo_algoritmo.csv**: RSA vs ECDSA comparison
-- **plots/**: Visual comparisons of latency, size, and depth
+- **resumen_web_estadistico.csv**: Estadísticas por sitio (mediana, p95, desviación estándar, etc.)
+- **comparativo_algoritmo.csv**: Comparación RSA vs ECDSA
+- **plots/**: Comparativas visuales de latencia, tamaño y profundidad
 
-See README.md for detailed column descriptions.
+Ver README.md para descripciones detalladas de columnas.
 

@@ -1,74 +1,81 @@
-# 🚀 Welcome to TLS PKI Experiment
+# 🚀 Empieza aquí — Experimento TLS PKI
 
-## What You Got
+## Qué incluye este proyecto
 
-Your project has been **completely reorganized** into a **professional, reproducible research structure**. 
+Estructura de investigación **reproducible** para medir el costo de verificación de certificados X.509 en TLS 1.3.
 
-### ✅ Structure Created
+### ✅ Estructura del repositorio
 
 ```
 TLS_PKI_Experiment/
-├── 📚 Documentation/
-│   ├── README.md                    ← Complete technical reference
-│   ├── QUICKSTART.md                ← Get started in 5 minutes
-│   ├── PROJECT_STRUCTURE.md         ← Detailed architecture
-│   └── REPRODUCIBILITY_CHECKLIST.md ← Validation guide
+├── 📚 Documentación/
+│   ├── README.md                    ← Referencia técnica completa
+│   ├── QUICKSTART.md                ← Inicio en 5 minutos
+│   ├── INSTALLATION.md              ← Instalación por plataforma
+│   ├── PROJECT_STRUCTURE.md         ← Arquitectura y flujo
+│   ├── REPRODUCIBILITY_CHECKLIST.md ← Validación de reproducibilidad
+│   ├── REPRODUCIBILITY_GITHUB.md    ← Reproducibilidad al publicar en GitHub
+│   └── PRE_GITHUB_CHECKLIST.md      ← Lista previa a subir el repositorio
 │
-├── 📦 Code/
-│   ├── requirements.txt             ← All dependencies
+├── 📦 Código/
+│   ├── requirements.txt             ← Dependencias Python
+│   ├── verify_environment.py        ← Verificación previa al experimento
 │   └── scripts/
-│       └── main.py                  ← Complete experiment (measurement + analysis)
+│       └── main.py                  ← Experimento completo (medición + análisis)
 │
-├── 🔄 Execution/
-│   ├── run.bat                      ← One-click Windows
-│   └── run.sh                       ← One-click Linux/macOS
+├── 🔄 Ejecución/
+│   ├── run.bat                      ← Un clic en Windows
+│   └── run.sh                       ← Un clic en Linux/macOS
 │
-└── 📂 Generated Folders (after execution)/
-    └── tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/  ← Timestamped output folder
-        ├── results/                 ← CSV and analysis files
-        ├── plots/                   ← 6 PNG visualizations
-        ├── logs/                    ← OpenSSL debug logs
-        └── certs_extraidos/         ← Extracted certificates
+└── 📂 Generado al ejecutar (carpeta con timestamp)/
+    └── tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/
+        ├── results/                 ← CSV y análisis
+        ├── plots/                   ← 6 gráficas PNG
+        ├── logs/                    ← Logs de OpenSSL
+        └── certs_extraidos/         ← Certificados extraídos
 ```
 
 ---
 
-## 🎯 Quick Start (5 Minutes)
+## 🎯 Inicio rápido (5 minutos)
 
-### Step 1: Install Dependencies
+### Paso 1: Instalar dependencias
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 2: Verify Environment
+### Paso 2: Verificar entorno
+
 ```bash
 python verify_environment.py
 ```
-This checks Python, OpenSSL, packages, and directories.
-See [INSTALLATION.md](INSTALLATION.md) for platform-specific help.
 
-### Step 3: Run the Experiment
+Comprueba Python, OpenSSL, paquetes y directorios. Ver [INSTALLATION.md](INSTALLATION.md) para ayuda por plataforma.
+
+### Paso 3: Ejecutar el experimento
+
 ```bash
-# Windows:
-python run.bat
+# Windows (PowerShell o CMD):
+.\run.bat
 
 # Linux/macOS:
 chmod +x run.sh
 bash run.sh
 ```
 
-### Step 4: View Results
+### Paso 4: Revisar resultados
 
-The script creates a **timestamped folder** with all outputs:
+Cada ejecución crea una **carpeta con timestamp** con todas las salidas:
 
 ```
 tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/
 ├── results/
-│   ├── raw_web_results.csv           ← All 10,000 handshake measurements
-│   ├── resumen_web_estadistico.csv   ← Statistics per site
-│   ├── comparativo_algoritmo.csv     ← RSA vs ECDSA comparison
-│   ├── chains_detectadas.csv         ← Certificate chain summary
-│   └── fallos.csv                    ← Errors (if any)
+│   ├── raw_web_results.csv           ← ~10 000 mediciones de handshake
+│   ├── resumen_web_estadistico.csv   ← Estadísticas por sitio
+│   ├── comparativo_algoritmo.csv     ← Comparación RSA vs ECDSA
+│   ├── chains_detectadas.csv         ← Resumen de cadenas
+│   └── fallos.csv                    ← Errores (si los hay)
 ├── plots/
 │   ├── comparativo_latencia_sitio_rsa_vs_ecdsa.png
 │   ├── boxplot_rsa_vs_ecdsa.png
@@ -77,92 +84,99 @@ tls_web_tls13_rsa_ecdsa_YYYYMMDD_HHMMSS/
 │   ├── scatter_latencia_vs_der_por_algoritmo.png
 │   └── scatter_latencia_vs_profundidad_por_algoritmo.png
 ├── logs/
-│   ├── inspect_*.log                 ← OpenSSL certificate inspection
-│   └── client_*.log                  ← Handshake timing details
+│   ├── inspect_*.log
+│   └── client_*.log
 └── certs_extraidos/
-    └── [site_certificates]/          ← PEM files per site
+    └── [certificados_por_sitio]/
 ```
 
-**Note:** Each run creates a NEW timestamped folder, so you can compare multiple runs.
+**Nota:** Cada ejecución genera una carpeta nueva; puedes comparar varias corridas.
 
 ---
 
-## � What Happens When You Run
+## ⚙️ Qué ocurre al ejecutar
 
-**Single Command:**
+**Comando único (equivalente a `run.bat` / `run.sh`):**
+
 ```bash
 python scripts/main.py
 ```
 
-**This does everything:**
-1. ✅ Verify Python and OpenSSL
-2. ✅ Find/download CA certificate bundle
-3. ✅ Inspect 10 real websites (HTTPS/TLS 1.3)
-4. ✅ Measure 1000 handshakes per website (~15 min)
-5. ✅ Calculate statistics & comparisons
-6. ✅ Generate 6 comparative plots
-7. ✅ Save everything to timestamped folder
+**El script realiza:**
 
-**Output:** New folder like `tls_web_tls13_rsa_ecdsa_20260519_200420/` with all results.
+1. ✅ Verifica Python y OpenSSL
+2. ✅ Localiza o descarga el bundle de certificados CA
+3. ✅ Inspecciona 10 sitios HTTPS reales (TLS 1.3)
+4. ✅ Mide 1000 handshakes por sitio (~15 min)
+5. ✅ Calcula estadísticas y comparaciones
+6. ✅ Genera 6 gráficas comparativas
+7. ✅ Exporta todo a la carpeta con timestamp
 
----
-
-## 📋 What Each File Does
-
-### Script (`scripts/main.py`)
-
-Script único que hace TODO:
-- Verifica dependencias (OpenSSL, Python)
-- Busca/descarga CA bundle
-- Inspecciona 10 sitios HTTPS reales
-- Mide 1000 handshakes TLS 1.3 por sitio
-- Calcula estadísticas
-- Genera 6 gráficas comparativas
-- Exporta resultados a CSV y PNG
-
-### Documentation
-
-| File | Read This For |
-|------|---------------|
-| **README.md** | Complete technical explanation (objective, methodology, outputs) |
-| **QUICKSTART.md** | 5-minute getting started guide |
-| **PROJECT_STRUCTURE.md** | Visual diagram and design decisions |
-| **REPRODUCIBILITY_CHECKLIST.md** | Verification that everything is reproducible |
+**Salida de ejemplo:** `tls_web_tls13_rsa_ecdsa_20260519_200420/`
 
 ---
 
-## 🔧 Configuration
+## 📋 Qué hace cada archivo
 
-### Change Target Websites
-Edit `scripts/main.py`:
+### Script principal (`scripts/main.py`)
+
+Un solo archivo con todo el flujo:
+- Verificación de dependencias (OpenSSL, Python)
+- Configuración del bundle CA
+- Inspección de cadenas en sitios HTTPS
+- Mediciones de handshake TLS 1.3
+- Estadísticas y gráficas
+- Exportación a CSV y PNG
+
+### Documentación
+
+| Archivo | Para qué leerlo |
+|---------|-----------------|
+| **README.md** | Objetivo, metodología, salidas, configuración |
+| **QUICKSTART.md** | Pasos mínimos en 5 minutos |
+| **INSTALLATION.md** | Instalación Windows / Linux / macOS |
+| **PROJECT_STRUCTURE.md** | Diagrama y decisiones de diseño |
+| **REPRODUCIBILITY_CHECKLIST.md** | Validación de reproducibilidad |
+| **REPRODUCIBILITY_GITHUB.md** | Reproducibilidad al publicar en GitHub |
+| **PRE_GITHUB_CHECKLIST.md** | Lista previa a subir el repositorio |
+
+---
+
+## 🔧 Configuración
+
+### Cambiar sitios objetivo
+
+Edita `scripts/main.py`:
+
 ```python
 TARGETS = [
     {"label": "google", "host": "google.com", "port": 443},
-    # Add your own sites here
+    # Agrega tus propios sitios aquí
 ]
 ```
 
-### Change Number of Measurements
-Edit `scripts/main.py`:
+### Cambiar número de mediciones
+
 ```python
-REPETITIONS = 1000  # Change to your value
+REPETITIONS = 1000  # Cambia al valor deseado
 ```
 
-### Increase Timeout (for slow networks)
-Edit `scripts/main.py`:
+### Aumentar timeout (redes lentas)
+
 ```python
-TIMEOUT_SECONDS = 15  # Default is 10
+TIMEOUT_SECONDS = 15  # Por defecto: 10
 ```
 
 ---
 
-## 📊 Output Explanation
+## 📊 Interpretación de salidas
 
-After running, you'll get:
+Rutas relativas a la carpeta con timestamp (ej. `tls_web_tls13_rsa_ecdsa_20260519_200420/`).
 
-### CSV Data Files
+### Archivos CSV (en `results/`)
 
-**results/resumen_estadistico.csv**
+**`results/resumen_web_estadistico.csv`**
+
 ```
 host,algorithm,n,median_ms,p95_ms,der_bytes
 google.com,ecdsa_p256,1000,85.234,95.102,1892
@@ -170,117 +184,114 @@ github.com,rsa2048,1000,92.445,105.330,2145
 ...
 ```
 
-**results/comparativo_algoritmo.csv**
+**`results/comparativo_algoritmo.csv`**
+
 ```
 algorithm,sites,total_handshakes,avg_median_ms,avg_der_bytes
 rsa2048,5,5000,91.2,2100
 ecdsa_p256,4,4000,87.5,1950
 ```
 
-### PNG Visualizations
+### Gráficas PNG (en `plots/`)
 
-1. **comparativo_latencia_sitio_rsa_vs_ecdsa.png**
-   - Bar chart: median latency per site (colored by algorithm)
-
-2. **boxplot_rsa_vs_ecdsa.png**
-   - Boxplot: latency distribution for each algorithm
-
-3. **promedio_medianas_por_algoritmo.png**
-   - Bar chart: average median latency by algorithm
-
-4. **tamano_der_promedio_rsa_vs_ecdsa.png**
-   - Bar chart: average certificate chain size
-
-5. **scatter_latencia_vs_der_por_algoritmo.png**
-   - Scatter plot: latency vs certificate size
-
-6. **scatter_latencia_vs_profundidad_por_algoritmo.png**
-   - Scatter plot: latency vs certificate chain depth
+1. **comparativo_latencia_sitio_rsa_vs_ecdsa.png** — Latencia mediana por sitio
+2. **boxplot_rsa_vs_ecdsa.png** — Distribución de latencias por algoritmo
+3. **promedio_medianas_por_algoritmo.png** — Promedio de medianas por algoritmo
+4. **tamano_der_promedio_rsa_vs_ecdsa.png** — Tamaño medio de cadena DER
+5. **scatter_latencia_vs_der_por_algoritmo.png** — Latencia vs tamaño DER
+6. **scatter_latencia_vs_profundidad_por_algoritmo.png** — Latencia vs profundidad de cadena
 
 ---
 
-## ❓ Troubleshooting
+## ❓ Solución de problemas
 
-### "openssl not found"
-- **Windows:** Install [Git for Windows](https://git-scm.com/download/win) (includes OpenSSL)
+### «openssl no encontrado»
+
+- **Windows:** [Git for Windows](https://git-scm.com/download/win) (incluye OpenSSL)
 - **Linux:** `sudo apt-get install openssl`
 - **macOS:** `brew install openssl`
 
-### "matplotlib not available"
+### «matplotlib no disponible»
+
 ```bash
 pip install matplotlib
 ```
 
-### "Network timeout"
-- Edit `TIMEOUT_SECONDS` in `scripts/01_collect_data.py`
-- Or verify your internet connection
-- Or remove problematic sites from `TARGETS`
+### Timeout de red
 
-### "No CA bundle found"
-The script will attempt automatic download. If that fails:
+- Edita `TIMEOUT_SECONDS` en `scripts/main.py`
+- Comprueba la conexión a internet
+- Quita sitios problemáticos de `TARGETS`
+
+### «No se encontró CA bundle»
+
+El script intenta descargarlo automáticamente. Si falla:
+
 ```bash
 curl -o cacert.pem https://curl.se/ca/cacert.pem
 ```
-Place `cacert.pem` in the project root.
+
+Coloca `cacert.pem` en la raíz del proyecto.
 
 ---
 
-## 🔐 Why This Structure?
+## 🔐 Por qué esta estructura
 
 ### ✅ Reproducible
-- Anyone can clone this repo and run the exact same experiment
-- No external dependencies or manual setup
-- All decisions are logged
 
-### ✅ Professional
-- Separation of concerns (collection vs. analysis)
-- Reusable utilities in `utils.py`
-- Comprehensive documentation
+- Cualquiera puede clonar o descargar el ZIP y repetir el experimento
+- Dependencias listadas en `requirements.txt`
+- Decisiones y errores registrados en `logs/` y `results/fallos.csv`
 
-### ✅ Maintainable
-- Scripts are modular and independent
-- Easy to customize without breaking functionality
-- Clear file organization
+### ✅ Profesional
 
-### ✅ Scientific
-- Raw data separated from processed outputs
-- All errors logged for audit trail
-- Full metadata in CSV headers
+- Un solo script (`main.py`) con el flujo completo
+- Documentación en español
+- Salidas organizadas por ejecución (timestamp)
 
----
+### ✅ Mantenible
 
-## 📖 Next Steps
+- Configuración centralizada en `TARGETS`, `REPETITIONS`, `TIMEOUT_SECONDS`
+- Sin módulos auxiliares que desincronicen la documentación
 
-1. ✅ Read [README.md](README.md) for complete technical details
-2. ✅ Run `python run.bat` (or `bash run.sh`)
-3. ✅ Check `results/` folder for outputs
-4. ✅ Customize `TARGETS` or `REPETITIONS` as needed
-5. ✅ Share the entire `TLS_PKI_Experiment/` folder for reproducibility
+### ✅ Orientado a investigación
+
+- Datos crudos (`raw_web_results.csv`) separados de resúmenes
+- Metadatos en encabezados CSV
+- Gráficas listas para informes
 
 ---
 
-## 📞 Support
+## 📆 Próximos pasos
 
-For issues or customization questions:
-- Check [QUICKSTART.md](QUICKSTART.md) for common setup problems
-- Check [README.md](README.md) for detailed documentation
-- Review comments in the Python scripts
-- Check [REPRODUCIBILITY_CHECKLIST.md](REPRODUCIBILITY_CHECKLIST.md) for validation
-
----
-
-## 📝 Project Info
-
-**Objective:** Measure the operational cost of X.509 certificate verification in TLS 1.3 under different algorithms (RSA-2048 vs ECDSA P-256) and chain depths.
-
-**Methodology:** Empirical measurements of real-world HTTPS connections treated as a black box, collecting latency, message sizes, and certificate chain metadata.
-
-**Output:** Statistical analysis and comparative visualizations for RSA vs ECDSA performance.
-
-**Data:** 10,000+ measurements across 10 major websites.
+1. ✅ Lee [README.md](README.md) para el detalle técnico
+2. ✅ Ejecuta `.\run.bat` (Windows) o `bash run.sh` (Linux/macOS)
+3. ✅ Abre la carpeta `tls_web_tls13_rsa_ecdsa_*` más reciente
+4. ✅ Personaliza `TARGETS` o `REPETITIONS` si lo necesitas
+5. ✅ Usa [REPRODUCIBILITY_CHECKLIST.md](REPRODUCIBILITY_CHECKLIST.md) antes de publicar
 
 ---
 
-**Status:** ✅ Ready to use  
-**Last Updated:** May 2026
+## 📞 Ayuda
 
+- [QUICKSTART.md](QUICKSTART.md) — Problemas frecuentes de arranque
+- [README.md](README.md) — Documentación completa
+- [INSTALLATION.md](INSTALLATION.md) — Instalación por SO
+- Comentarios en `scripts/main.py` y `verify_environment.py`
+
+---
+
+## 📝 Información del proyecto
+
+**Objetivo:** Medir el costo operativo de la verificación de certificados X.509 en TLS 1.3 con RSA-2048 frente a ECDSA P-256 y distintas profundidades de cadena.
+
+**Metodología:** Mediciones empíricas sobre conexiones HTTPS reales (caja negra): latencia, tamaños de mensaje y metadatos de cadena.
+
+**Salida:** Análisis estadístico y visualizaciones comparativas RSA vs ECDSA.
+
+**Datos:** Más de 10 000 mediciones en ~10 sitios web.
+
+---
+
+**Estado:** ✅ Listo para usar  
+**Última actualización:** Mayo 2026
